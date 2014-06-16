@@ -1,0 +1,11 @@
+{
+  "name": "hashed",
+  "version": "0.0.0",
+  "description": "Serialize state from multiple providers using location.hash",
+  "scripts": {
+    "test": "lab -t 100 test"
+  },
+  "devDependencies": {
+    "lab": "~3.2.1"
+  }
+}

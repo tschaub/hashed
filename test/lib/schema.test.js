@@ -50,12 +50,11 @@ experiment('schema', function() {
 
     });
 
-    experiment('#getKeys()', function() {
+    experiment('#getLength()', function() {
 
-      test('returns an array of keys', function(done) {
+      test('returns the number of fields', function(done) {
         var s = new Schema({foo: 'bar', baz: 'bam'});
-        var keys = s.getKeys();
-        assert.deepEqual(keys.sort(), ['baz', 'foo']);
+        assert.equal(s.getLength(), 2);
         done();
       });
 

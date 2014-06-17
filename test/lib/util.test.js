@@ -65,4 +65,33 @@ experiment('util', function() {
 
   });
 
+  experiment('extend()', function() {
+    var extend = util.extend;
+
+    test('copies properties from source to dest', function(done) {
+      var source = {foo: 'bar'};
+      var dest = {};
+      extend(dest, source);
+      assert.equal(dest.foo, 'bar');
+      done();
+    });
+
+    test('overwrites existing dest properties', function(done) {
+      var source = {foo: 'bar'};
+      var dest = {foo: 'bam'};
+      extend(dest, source);
+      assert.equal(dest.foo, 'bar');
+      done();
+    });
+
+    test('returns dest object', function(done) {
+      var source = {foo: 'bar'};
+      var dest = {foo: 'bam'};
+      var got = extend(dest, source);
+      assert.equal(got, dest);
+      done();
+    });
+
+  });
+
 });

@@ -70,6 +70,8 @@ experiment('store', function() {
         });
 
         store.update(['foo.0a', 'bar.0a', 'bar.1a']);
+        assert.lengthOf(p1Calls, 0);
+        assert.lengthOf(p2Calls, 0);
 
         setTimeout(function() {
           assert.lengthOf(p1Calls, 2);
@@ -80,7 +82,75 @@ experiment('store', function() {
           assert.deepEqual(p2Calls[0], {bar: 'bar.1'});
           assert.deepEqual(p2Calls[1], {bar: 'bar.1a'});
           done();
-        }, 5);
+        }, 0);
+
+      });
+
+      test('notifies providers on multiple calls', function(done) {
+        var store = new Store(noop);
+
+        var calls = [];
+        store.register({foo: 'foo.0', bar: 'bar.0'}, function(changes) {
+          calls.push(changes);
+        });
+
+        store.update(['foo.1', 'bar.1']);
+        store.update(['foo.2', 'bar.2']);
+        assert.lengthOf(calls, 0);
+
+        setTimeout(function() {
+          assert.lengthOf(calls, 3);
+          assert.deepEqual(calls[0], {foo: 'foo.0', bar: 'bar.0'});
+          assert.deepEqual(calls[1], {foo: 'foo.1', bar: 'bar.1'});
+          assert.deepEqual(calls[2], {foo: 'foo.2', bar: 'bar.2'});
+          done();
+        }, 0);
+
+      });
+
+      test('notifies providers with updated values', function(done) {
+        var store = new Store(noop);
+
+        var calls = [];
+        var update = store.register(
+            {foo: 'foo.0', bar: 'bar.0'},
+            function(changes) {
+              calls.push(changes);
+            });
+
+        update({foo: 'foo.1', bar: 'bar.1'});
+        store.update(['foo.2', 'bar.2']);
+        assert.lengthOf(calls, 0);
+
+        setTimeout(function() {
+          assert.lengthOf(calls, 2);
+          assert.deepEqual(calls[0], {foo: 'foo.0', bar: 'bar.0'});
+          assert.deepEqual(calls[1], {foo: 'foo.2', bar: 'bar.2'});
+          done();
+        }, 0);
+
+      });
+
+      test('notification does not include unchanged values', function(done) {
+        var store = new Store(noop);
+
+        var calls = [];
+        var update = store.register(
+            {foo: 'foo.0', bar: 'bar.0'},
+            function(changes) {
+              calls.push(changes);
+            });
+
+        update({foo: 'foo.1', bar: 'bar.1'});
+        store.update(['foo.2', 'bar.1']);
+        assert.lengthOf(calls, 0);
+
+        setTimeout(function() {
+          assert.lengthOf(calls, 2);
+          assert.deepEqual(calls[0], {foo: 'foo.0', bar: 'bar.0'});
+          assert.deepEqual(calls[1], {foo: 'foo.2'});
+          done();
+        }, 0);
 
       });
 
@@ -107,7 +177,7 @@ experiment('store', function() {
           assert.deepEqual(p2Calls[0], {date: new Date(1)});
           assert.deepEqual(p2Calls[1], {date: new Date(2)});
           done();
-        }, 5);
+        }, 0);
 
       });
 
@@ -124,6 +194,9 @@ experiment('store', function() {
           p2Calls.push(changes);
         });
 
+        assert.lengthOf(p1Calls, 0);
+        assert.lengthOf(p2Calls, 0);
+
         setTimeout(function() {
           assert.lengthOf(p1Calls, 1);
           assert.deepEqual(p1Calls[0], {number: 10});
@@ -131,7 +204,7 @@ experiment('store', function() {
           assert.lengthOf(p2Calls, 1);
           assert.deepEqual(p2Calls[0], {date: new Date(1)});
           done();
-        }, 5);
+        }, 0);
 
       });
 
@@ -149,6 +222,9 @@ experiment('store', function() {
           p2Calls.push(changes);
         });
 
+        assert.lengthOf(p1Calls, 0);
+        assert.lengthOf(p2Calls, 0);
+
         setTimeout(function() {
           assert.lengthOf(p1Calls, 1);
           assert.deepEqual(p1Calls[0], {number: 42});
@@ -156,7 +232,7 @@ experiment('store', function() {
           assert.lengthOf(p2Calls, 1);
           assert.deepEqual(p2Calls[0], {date: new Date(2)});
           done();
-        }, 5);
+        }, 0);
 
       });
 

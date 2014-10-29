@@ -29,7 +29,7 @@
     "start": "http-server . & watchy --watch package.json,lib -- make",
     "test": "lab -t 100 test"
   },
-  "main": "dist/hashed.js",
+  "main": "lib/index.js",
   "devDependencies": {
     "browserify": "~6.2.0",
     "http-server": "^0.7.2",

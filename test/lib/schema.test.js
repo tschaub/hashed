@@ -72,6 +72,26 @@ experiment('schema', function() {
         done();
       });
 
+      test('calls custom serializer', function(done) {
+        var calls = [];
+        var s = new Schema({
+          custom: {
+            init: 10,
+            serialize: function(value, state) {
+              calls.push([value, state]);
+              return String(value);
+            }
+          }
+        });
+
+        var state = {};
+        assert.equal(s.serialize('custom', 42, state), '42');
+        assert.equal(calls.length, 1);
+        assert.equal(calls[0][0], 42);
+        assert.equal(calls[0][1], state);
+        done();
+      });
+
       test('throws for type mismatch', function(done) {
         var s = new Schema({aNumber: 10});
         assert.throws(function() {

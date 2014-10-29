@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Basic Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <style>
+      body {
+        margin: 0 90px;
+      }
+    </style>
+    <script src="../dist/hashed.js"></script>
+  </head>
+  <body>
+    <h1><code>hashed</code></h1>
+    <p>
+      This example demonstrates how <code>hashed</code> can be used to manage
+      states of multiple views.
+    </p>
+    <section>
+      <h2>View 1</h2>
+      <p>This form represents the state of the first view.</p>
+      <form id="view-1" class="pure-form pure-form-aligned">
+        <fieldset>
+          <div class="pure-control-group">
+            <label for="quantity">quantity</label>
+            <input type="range" id="quantity">
+          </div>
+          <div class="pure-control-group">
+            <label for="item">item</label>
+            <select id="item">
+              <option>chickens</option>
+              <option>beans</option>
+              <option>bananas</option>
+            </select>
+          </div>
+        </fieldset>
+      </form>
+      <script>
+        (function() {
+
+          var elements = document.getElementById('view-1').elements;
+
+          var config = {
+            quantity: '75',
+            item: 'beans'
+          };
+
+          var update = hashed.register(config, function(state) {
+            // called whenever the state changes
+            for (var name in state) {
+              elements.namedItem(name).value = state[name];
+            }
+          });
+
+          for (var name in config) {
+            elements.namedItem(name).addEventListener('change', function(evt) {
+              update(evt.target.id, evt.target.value);
+            });
+          }
+
+        }());
+      </script>
+    </section>
+    <section>
+      <h2>View 2</h2>
+      <p>This form represents the state of the second view.</p>
+      <form id="view-2" class="pure-form pure-form-aligned">
+        <fieldset>
+          <div class="pure-control-group">
+            <label for="date">date</label>
+            <input type="date" id="date">
+          </div>
+          <div class="pure-control-group">
+            <label for="color">color</label>
+            <input id="color" type="color">
+          </div>
+        </fieldset>
+      </form>
+      <script>
+        (function() {
+
+          var elements = document.getElementById('view-2').elements;
+
+          var config = {
+            date: '2014-10-28',
+            color: '#bada55'
+          };
+
+          var update = hashed.register(config, function(state) {
+            // called whenever the state changes
+            for (var name in state) {
+              elements.namedItem(name).value = state[name];
+            }
+          });
+
+          for (var name in config) {
+            elements.namedItem(name).addEventListener('change', function(evt) {
+              update(evt.target.id, evt.target.value);
+            });
+          }
+
+        }());
+      </script>
+    </section>
+    <script>
+      // after all state providers have been registered,
+      // start listening for hash changes
+      hashed.start();
+    </script>
+  </body>
+</html>

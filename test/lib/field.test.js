@@ -6,6 +6,8 @@ var assert = lab.assert;
 var experiment = lab.experiment;
 var test = lab.test;
 
+var dec = decodeURIComponent;
+
 experiment('field', function() {
 
   experiment('Field', function() {
@@ -95,7 +97,7 @@ experiment('field', function() {
         var field = new Field({init: new Date()});
         assert.instanceOf(field, Field);
         var then = '2014-06-09T23:57:12.588Z';
-        assert.equal(field.serialize(new Date(then)), then);
+        assert.equal(dec(field.serialize(new Date(then))), then);
         done();
       });
 
@@ -103,7 +105,7 @@ experiment('field', function() {
         var field = new Field({init: [42, 'foo']});
         assert.instanceOf(field, Field);
         var array = ['foo', 42];
-        var json = field.serialize(array);
+        var json = dec(field.serialize(array));
         assert.deepEqual(JSON.parse(json), array);
         done();
       });
@@ -112,7 +114,7 @@ experiment('field', function() {
         var field = new Field({init: {foo: 'bar'}});
         assert.instanceOf(field, Field);
         var obj = {baz: 'bam'};
-        var json = field.serialize(obj);
+        var json = dec(field.serialize(obj));
         assert.deepEqual(JSON.parse(json), obj);
         done();
       });

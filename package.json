@@ -3,10 +3,15 @@
   "version": "0.0.0",
   "description": "Serialize state from multiple providers using location.hash",
   "scripts": {
+    "start": "http-server . & watchy --watch package.json,lib -- make",
     "test": "lab -t 100 test"
   },
+  "main": "dist/hashed.js",
   "devDependencies": {
+    "browserify": "~6.2.0",
+    "http-server": "^0.7.2",
     "lab": "~3.2.1",
-    "browserify": "~6.2.0"
+    "uglify-js": "^2.4.15",
+    "watchy": "^0.5.3"
   }
 }

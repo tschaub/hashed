@@ -6,6 +6,8 @@ var assert = lab.assert;
 var experiment = lab.experiment;
 var test = lab.test;
 
+var enc = encodeURIComponent;
+var dec = decodeURIComponent;
 
 experiment('serializers', function() {
 
@@ -57,7 +59,7 @@ experiment('serializers', function() {
       var serialize = get('date');
       var then = '2014-06-09T23:57:12.588Z';
       var date = new Date(then);
-      assert.equal(serialize(date), then);
+      assert.equal(dec(serialize(date)), then);
       done();
     });
 
@@ -73,7 +75,7 @@ experiment('serializers', function() {
       var serialize = get('array');
       var array = ['foo', 42];
       var json = JSON.stringify(array);
-      assert.equal(serialize(array), json);
+      assert.equal(serialize(array), enc(json));
       done();
     });
 
@@ -88,7 +90,7 @@ experiment('serializers', function() {
     test('returns an appropriate serializer for object', function(done) {
       var serialize = get('object');
       var obj = {foo: 'bar'};
-      var json = serialize(obj);
+      var json = dec(serialize(obj));
       assert.deepEqual(obj, JSON.parse(json));
       done();
     });

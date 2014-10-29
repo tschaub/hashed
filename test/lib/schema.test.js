@@ -6,6 +6,8 @@ var assert = lab.assert;
 var experiment = lab.experiment;
 var test = lab.test;
 
+var dec = decodeURIComponent;
+
 experiment('schema', function() {
 
   experiment('Schema', function() {
@@ -65,7 +67,7 @@ experiment('schema', function() {
       test('serializes values', function(done) {
         var s = new Schema({aNumber: 10, anArray: ['one', 'two']});
         assert.equal(s.serialize('aNumber', 42), '42');
-        var json = s.serialize('anArray', [2, 3]);
+        var json = dec(s.serialize('anArray', [2, 3]));
         assert.deepEqual(JSON.parse(json), [2, 3]);
         done();
       });

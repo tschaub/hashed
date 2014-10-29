@@ -36,6 +36,7 @@ experiment('store', function() {
           calls.push(values);
         });
         var update = store.register({foo: 'bar'}, noop);
+        store.start();
 
         assert.isFunction(update);
 
@@ -68,19 +69,38 @@ experiment('store', function() {
         store.register({bar: 'bar.1'}, function(changes) {
           p2Calls.push(changes);
         });
+        store.start();
 
         store.update(['foo.0a', 'bar.0a', 'bar.1a']);
         assert.lengthOf(p1Calls, 0);
         assert.lengthOf(p2Calls, 0);
 
         setTimeout(function() {
-          assert.lengthOf(p1Calls, 2);
-          assert.deepEqual(p1Calls[0], {foo: 'foo.0', bar: 'bar.0'});
-          assert.deepEqual(p1Calls[1], {foo: 'foo.0a', bar: 'bar.0a'});
+          assert.lengthOf(p1Calls, 1);
+          assert.deepEqual(p1Calls[0], {foo: 'foo.0a', bar: 'bar.0a'});
 
-          assert.lengthOf(p2Calls, 2);
-          assert.deepEqual(p2Calls[0], {bar: 'bar.1'});
-          assert.deepEqual(p2Calls[1], {bar: 'bar.1a'});
+          assert.lengthOf(p2Calls, 1);
+          assert.deepEqual(p2Calls[0], {bar: 'bar.1a'});
+          done();
+        }, 0);
+
+      });
+
+      test('uses defaults if update cannot be deserialized', function(done) {
+        var store = new Store(noop);
+
+        var p1Calls = [];
+        store.register({number: 42}, function(changes) {
+          p1Calls.push(changes);
+        });
+        store.start();
+
+        store.update(['bogus']);
+        assert.lengthOf(p1Calls, 0);
+
+        setTimeout(function() {
+          assert.lengthOf(p1Calls, 1);
+          assert.deepEqual(p1Calls[0], {number: 42});
           done();
         }, 0);
 
@@ -93,16 +113,16 @@ experiment('store', function() {
         store.register({foo: 'foo.0', bar: 'bar.0'}, function(changes) {
           calls.push(changes);
         });
+        store.start();
 
         store.update(['foo.1', 'bar.1']);
         store.update(['foo.2', 'bar.2']);
         assert.lengthOf(calls, 0);
 
         setTimeout(function() {
-          assert.lengthOf(calls, 3);
-          assert.deepEqual(calls[0], {foo: 'foo.0', bar: 'bar.0'});
-          assert.deepEqual(calls[1], {foo: 'foo.1', bar: 'bar.1'});
-          assert.deepEqual(calls[2], {foo: 'foo.2', bar: 'bar.2'});
+          assert.lengthOf(calls, 2);
+          assert.deepEqual(calls[0], {foo: 'foo.1', bar: 'bar.1'});
+          assert.deepEqual(calls[1], {foo: 'foo.2', bar: 'bar.2'});
           done();
         }, 0);
 
@@ -117,15 +137,15 @@ experiment('store', function() {
             function(changes) {
               calls.push(changes);
             });
+        store.start();
 
         update({foo: 'foo.1', bar: 'bar.1'});
         store.update(['foo.2', 'bar.2']);
         assert.lengthOf(calls, 0);
 
         setTimeout(function() {
-          assert.lengthOf(calls, 2);
-          assert.deepEqual(calls[0], {foo: 'foo.0', bar: 'bar.0'});
-          assert.deepEqual(calls[1], {foo: 'foo.2', bar: 'bar.2'});
+          assert.lengthOf(calls, 1);
+          assert.deepEqual(calls[0], {foo: 'foo.2', bar: 'bar.2'});
           done();
         }, 0);
 
@@ -140,15 +160,37 @@ experiment('store', function() {
             function(changes) {
               calls.push(changes);
             });
+        store.start();
 
         update({foo: 'foo.1', bar: 'bar.1'});
         store.update(['foo.2', 'bar.1']);
         assert.lengthOf(calls, 0);
 
         setTimeout(function() {
-          assert.lengthOf(calls, 2);
-          assert.deepEqual(calls[0], {foo: 'foo.0', bar: 'bar.0'});
-          assert.deepEqual(calls[1], {foo: 'foo.2'});
+          assert.lengthOf(calls, 1);
+          assert.deepEqual(calls[0], {foo: 'foo.2'});
+          done();
+        }, 0);
+
+      });
+
+      test('no notification if no values changed', function(done) {
+        var store = new Store(noop);
+
+        var calls = [];
+        var update = store.register(
+            {foo: 'foo.0', bar: 'bar.0'},
+            function(changes) {
+              calls.push(changes);
+            });
+        store.start();
+
+        update({foo: 'foo.1', bar: 'bar.1'});
+        store.update(['foo.1', 'bar.1']);
+        assert.lengthOf(calls, 0);
+
+        setTimeout(function() {
+          assert.lengthOf(calls, 0);
           done();
         }, 0);
 
@@ -166,43 +208,16 @@ experiment('store', function() {
         store.register({date: new Date(1)}, function(changes) {
           p2Calls.push(changes);
         });
+        store.start();
 
         store.update(['42', new Date(2).toISOString()]);
-        setTimeout(function() {
-          assert.lengthOf(p1Calls, 2);
-          assert.deepEqual(p1Calls[0], {number: 10});
-          assert.deepEqual(p1Calls[1], {number: 42});
-
-          assert.lengthOf(p2Calls, 2);
-          assert.deepEqual(p2Calls[0], {date: new Date(1)});
-          assert.deepEqual(p2Calls[1], {date: new Date(2)});
-          done();
-        }, 0);
-
-      });
-
-      test('calls providers with defaults after registration', function(done) {
-        var store = new Store(noop);
-
-        var p1Calls = [];
-        store.register({number: 10}, function(changes) {
-          p1Calls.push(changes);
-        });
-
-        var p2Calls = [];
-        store.register({date: new Date(1)}, function(changes) {
-          p2Calls.push(changes);
-        });
-
-        assert.lengthOf(p1Calls, 0);
-        assert.lengthOf(p2Calls, 0);
 
         setTimeout(function() {
           assert.lengthOf(p1Calls, 1);
-          assert.deepEqual(p1Calls[0], {number: 10});
+          assert.deepEqual(p1Calls[0], {number: 42});
 
           assert.lengthOf(p2Calls, 1);
-          assert.deepEqual(p2Calls[0], {date: new Date(1)});
+          assert.deepEqual(p2Calls[0], {date: new Date(2)});
           done();
         }, 0);
 
@@ -210,6 +225,8 @@ experiment('store', function() {
 
       test('calls providers with existing values', function(done) {
         var store = new Store(noop);
+        store.start();
+
         store.update(['42', new Date(2).toISOString()]);
 
         var p1Calls = [];

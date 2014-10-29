@@ -86,7 +86,7 @@ experiment('store', function() {
 
       });
 
-      test('uses defaults if update cannot be deserialized', function(done) {
+      test('uses defaults if string cannot be deserialized', function(done) {
         var store = new Store(noop);
 
         var p1Calls = [];
@@ -96,6 +96,26 @@ experiment('store', function() {
         store.start();
 
         store.update(['bogus']);
+        assert.lengthOf(p1Calls, 0);
+
+        setTimeout(function() {
+          assert.lengthOf(p1Calls, 1);
+          assert.deepEqual(p1Calls[0], {number: 42});
+          done();
+        }, 0);
+
+      });
+
+      test('uses defaults if not enough values provided', function(done) {
+        var store = new Store(noop);
+
+        var p1Calls = [];
+        store.register({number: 42}, function(changes) {
+          p1Calls.push(changes);
+        });
+        store.start();
+
+        store.update([]);
         assert.lengthOf(p1Calls, 0);
 
         setTimeout(function() {

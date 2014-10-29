@@ -2,6 +2,29 @@
   "name": "hashed",
   "version": "0.0.0",
   "description": "Serialize state from multiple providers using location.hash",
+  "homepage": "https://github.com/tschaub/hashed",
+  "author": {
+    "name": "Tim Schaub",
+    "url": "http://tschaub.net/"
+  },
+  "keywords": [
+    "hash",
+    "state",
+    "url"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tschaub/hashed.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tschaub/hashed/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://tschaub.mit-license.org/"
+    }
+  ],
   "scripts": {
     "start": "http-server . & watchy --watch package.json,lib -- make",
     "test": "lab -t 100 test"

@@ -25,3 +25,4 @@ update({
   stringValue: 'bar'  
 });
 ```
+[![Current Status](https://secure.travis-ci.org/tschaub/hashed.png?branch=master)](https://travis-ci.org/tschaub/hashed)

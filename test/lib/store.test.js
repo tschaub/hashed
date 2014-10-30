@@ -36,7 +36,6 @@ experiment('store', function() {
           calls.push(values);
         });
         var update = store.register({foo: 'bar'}, noop);
-        store.start();
 
         assert.isFunction(update);
 
@@ -69,7 +68,6 @@ experiment('store', function() {
         store.register({bar: 'bar.1'}, function(changes) {
           p2Calls.push(changes);
         });
-        store.start();
 
         store.update(['foo.0a', 'bar.0a', 'bar.1a']);
         assert.lengthOf(p1Calls, 0);
@@ -93,7 +91,6 @@ experiment('store', function() {
         store.register({number: 42}, function(changes) {
           p1Calls.push(changes);
         });
-        store.start();
 
         store.update(['bogus']);
         assert.lengthOf(p1Calls, 0);
@@ -113,7 +110,6 @@ experiment('store', function() {
         store.register({number: 42}, function(changes) {
           p1Calls.push(changes);
         });
-        store.start();
 
         store.update([]);
         assert.lengthOf(p1Calls, 0);
@@ -126,23 +122,21 @@ experiment('store', function() {
 
       });
 
-      test('notifies providers on multiple calls', function(done) {
+      test('notifies providers once on multiple calls', function(done) {
         var store = new Store(noop);
 
         var calls = [];
         store.register({foo: 'foo.0', bar: 'bar.0'}, function(changes) {
           calls.push(changes);
         });
-        store.start();
 
         store.update(['foo.1', 'bar.1']);
         store.update(['foo.2', 'bar.2']);
         assert.lengthOf(calls, 0);
 
         setTimeout(function() {
-          assert.lengthOf(calls, 2);
-          assert.deepEqual(calls[0], {foo: 'foo.1', bar: 'bar.1'});
-          assert.deepEqual(calls[1], {foo: 'foo.2', bar: 'bar.2'});
+          assert.lengthOf(calls, 1);
+          assert.deepEqual(calls[0], {foo: 'foo.2', bar: 'bar.2'});
           done();
         }, 0);
 
@@ -157,7 +151,6 @@ experiment('store', function() {
             function(changes) {
               calls.push(changes);
             });
-        store.start();
 
         update({foo: 'foo.1', bar: 'bar.1'});
         store.update(['foo.2', 'bar.2']);
@@ -180,7 +173,6 @@ experiment('store', function() {
             function(changes) {
               calls.push(changes);
             });
-        store.start();
 
         update({foo: 'foo.1', bar: 'bar.1'});
         store.update(['foo.2', 'bar.1']);
@@ -203,7 +195,6 @@ experiment('store', function() {
             function(changes) {
               calls.push(changes);
             });
-        store.start();
 
         update({foo: 'foo.1', bar: 'bar.1'});
         store.update(['foo.1', 'bar.1']);
@@ -228,7 +219,6 @@ experiment('store', function() {
         store.register({date: new Date(1)}, function(changes) {
           p2Calls.push(changes);
         });
-        store.start();
 
         store.update(['42', new Date(2).toISOString()]);
 
@@ -245,7 +235,6 @@ experiment('store', function() {
 
       test('calls providers with existing values', function(done) {
         var store = new Store(noop);
-        store.start();
 
         store.update(['42', new Date(2).toISOString()]);
 

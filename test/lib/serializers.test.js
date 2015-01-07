@@ -55,6 +55,21 @@ experiment('serializers', function() {
       done();
     });
 
+    test('returns an appropriate serializer for boolean', function(done) {
+      var serialize = get('boolean');
+      assert.equal(serialize(true), 'true');
+      assert.equal(serialize(false), 'false');
+      done();
+    });
+
+    test('boolean serializer throws for non-boolean', function(done) {
+      var serialize = get('boolean');
+      assert.throws(function() {
+        serialize('foo');
+      }, 'Expected boolean to serialize: foo');
+      done();
+    });
+
     test('returns an appropriate serializer for date', function(done) {
       var serialize = get('date');
       var then = '2014-06-09T23:57:12.588Z';

@@ -77,6 +77,29 @@ experiment('deserializers', function() {
       done();
     });
 
+    test('returns an appropriate deserializer for boolean', function(done) {
+      var deserialize = get('boolean');
+      assert.equal(deserialize('true'), true);
+      assert.equal(deserialize('false'), false);
+      done();
+    });
+
+    test('boolean deserializer throws for non-boolean', function(done) {
+      var deserialize = get('boolean');
+      assert.throws(function() {
+        deserialize('foo');
+      }, 'Expected boolean to deserialize: ');
+      done();
+    });
+
+    test('boolean deserializer throws for empty string', function(done) {
+      var deserialize = get('boolean');
+      assert.throws(function() {
+        deserialize('');
+      }, 'Expected string to deserialize: ');
+      done();
+    });
+
     test('returns an appropriate deserializer for date', function(done) {
       var deserialize = get('date');
       var then = '2014-06-09T23:57:12.588Z';

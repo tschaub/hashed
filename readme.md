@@ -16,9 +16,6 @@ var update = hashed.register(config, function(state) {
   // the state object includes any changed values
 });
 
-// start monitoring changes in the URL hash
-hashed.start();
-
 // call the update function when you want to have the URL hash
 // updated with some new state
 update({

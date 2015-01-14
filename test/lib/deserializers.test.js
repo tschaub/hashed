@@ -79,8 +79,8 @@ experiment('deserializers', function() {
 
     test('returns an appropriate deserializer for boolean', function(done) {
       var deserialize = get('boolean');
-      assert.equal(deserialize('true'), true);
-      assert.equal(deserialize('false'), false);
+      assert.equal(deserialize('1'), true);
+      assert.equal(deserialize('0'), false);
       done();
     });
 
@@ -88,7 +88,7 @@ experiment('deserializers', function() {
       var deserialize = get('boolean');
       assert.throws(function() {
         deserialize('foo');
-      }, 'Expected boolean to deserialize: ');
+      }, 'Expected "1" or "0" for boolean: ');
       done();
     });
 

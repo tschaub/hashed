@@ -1,6 +1,6 @@
 {
   "name": "hashed",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Serialize state from multiple providers using location.hash",
   "homepage": "https://github.com/tschaub/hashed",
   "author": {

@@ -57,8 +57,8 @@ experiment('serializers', function() {
 
     test('returns an appropriate serializer for boolean', function(done) {
       var serialize = get('boolean');
-      assert.equal(serialize(true), 'true');
-      assert.equal(serialize(false), 'false');
+      assert.equal(serialize(true), '1');
+      assert.equal(serialize(false), '0');
       done();
     });
 

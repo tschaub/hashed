@@ -36,6 +36,7 @@ The `register` function returns a function:
 
 ## Example
 
+```js
 // default values
 var config = {
   stringValue: 'foo',

@@ -27,11 +27,12 @@
   ],
   "scripts": {
     "start": "http-server . & watchy --watch package.json,lib -- make",
-    "test": "lab -t 100 test"
+    "test": "eslint lib test && lab -t 100 test"
   },
   "main": "lib/index.js",
   "devDependencies": {
     "browserify": "~6.2.0",
+    "eslint": "^0.18.0",
     "http-server": "^0.7.2",
     "lab": "~3.2.1",
     "uglify-js": "^2.4.15",

@@ -1,6 +1,6 @@
 var lab = require('lab');
 
-var store = require('../../lib/store');
+var Store = require('../../lib/store').Store;
 
 var assert = lab.assert;
 var experiment = lab.experiment;
@@ -9,7 +9,6 @@ var test = lab.test;
 experiment('store', function() {
 
   experiment('Store', function() {
-    var Store = store.Store;
     var noop = function() {};
 
     experiment('constructor', function() {

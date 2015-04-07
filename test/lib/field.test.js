@@ -1,6 +1,6 @@
 var lab = require('lab');
 
-var field = require('../../lib/field');
+var Field = require('../../lib/field').Field;
 
 var assert = lab.assert;
 var experiment = lab.experiment;
@@ -11,7 +11,6 @@ var dec = decodeURIComponent;
 experiment('field', function() {
 
   experiment('Field', function() {
-    var Field = field.Field;
 
     experiment('constructor', function() {
 
@@ -48,6 +47,7 @@ experiment('field', function() {
       test('throws for unsupported init (RegExp)', function(done) {
         assert.throws(function() {
           var field = new Field({init: /foo/});
+          assert.instanceOf(field, Field);
         }, 'Unable to serialize type: regexp');
         done();
       });
@@ -55,6 +55,7 @@ experiment('field', function() {
       test('throws for unsupported init (null)', function(done) {
         assert.throws(function() {
           var field = new Field({init: null});
+          assert.instanceOf(field, Field);
         }, 'Unable to serialize type: null');
         done();
       });
@@ -62,6 +63,7 @@ experiment('field', function() {
       test('throws for unsupported init (undefined)', function(done) {
         assert.throws(function() {
           var field = new Field({init: undefined});
+          assert.instanceOf(field, Field);
         }, 'Unable to serialize type: undefined');
         done();
       });
@@ -69,13 +71,14 @@ experiment('field', function() {
       test('throws for an object without init', function(done) {
         assert.throws(function() {
           var field = new Field({foo: 'bar'});
+          assert.instanceOf(field, Field);
         }, 'Missing init');
         done();
       });
 
     });
 
-    experiment('#serialize()', function(done) {
+    experiment('#serialize()', function() {
 
       test('serializes strings with init string', function(done) {
         var field = new Field({init: 'foo'});
@@ -120,7 +123,9 @@ experiment('field', function() {
       });
 
       test('serializes strings with init function (string)', function(done) {
-        var field = new Field({init: function() {return 'foo';}});
+        var field = new Field({init: function() {
+          return 'foo';
+        }});
         assert.instanceOf(field, Field);
         assert.equal(field.serialize('bar'), 'bar');
         done();
@@ -138,7 +143,7 @@ experiment('field', function() {
 
     });
 
-    experiment('#deserialize()', function(done) {
+    experiment('#deserialize()', function() {
 
       test('deserializes strings with init string', function(done) {
         var field = new Field({init: 'foo'});
@@ -183,7 +188,9 @@ experiment('field', function() {
       });
 
       test('deserializes strings with init function (string)', function(done) {
-        var field = new Field({init: function() {return 'foo';}});
+        var field = new Field({init: function() {
+          return 'foo';
+        }});
         assert.instanceOf(field, Field);
         assert.equal(field.deserialize('bar'), 'bar');
         done();

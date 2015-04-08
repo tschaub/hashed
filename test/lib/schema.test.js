@@ -22,39 +22,16 @@ experiment('schema', function() {
 
     });
 
-    experiment('#getOffset()', function() {
-
-      test('returns a number for known keys', function(done) {
-        var schema = new Schema({foo: 'bar'});
-        assert.isNumber(schema.getOffset('foo'));
-        done();
-      });
-
-      test('returns different numbers for different keys', function(done) {
-        var schema = new Schema({foo: 'bar', baz: 'bam'});
-        var fooOffset = schema.getOffset('foo');
-        assert.isNumber(fooOffset);
-        var bazOffset = schema.getOffset('baz');
-        assert.isNumber(bazOffset);
-
-        assert.notEqual(fooOffset, bazOffset);
-        done();
-      });
-
-      test('throws for unknown keys', function(done) {
-        var schema = new Schema({foo: 'bar'});
-        assert.throws(function() {
-          schema.getOffset('bam');
-        }, 'Invalid key: bam');
-        done();
-      });
-
-    });
-
     experiment('#getLength()', function() {
 
       test('returns the number of fields', function(done) {
         var schema = new Schema({foo: 'bar', baz: 'bam'});
+        assert.equal(schema.getLength(), 2);
+        done();
+      });
+
+      test('ignores the prefix', function(done) {
+        var schema = new Schema({foo: 'bar', baz: 'bam', _: 'pre'});
         assert.equal(schema.getLength(), 2);
         done();
       });
@@ -68,6 +45,12 @@ experiment('schema', function() {
         assert.equal(schema.serialize('aNumber', 42), '42');
         var json = dec(schema.serialize('anArray', [2, 3]));
         assert.deepEqual(JSON.parse(json), [2, 3]);
+        done();
+      });
+
+      test('works with unprefixed keys', function(done) {
+        var schema = new Schema({number: 10, _: 'pre'});
+        assert.equal(schema.serialize('number', 42), '42');
         done();
       });
 
@@ -168,6 +151,31 @@ experiment('schema', function() {
         assert.throws(function() {
           schema.getDefault('asdf');
         }, 'Unknown key: asdf');
+        done();
+      });
+
+    });
+
+    experiment('#getPrefixed()', function() {
+
+      test('prepends the prefix', function(done) {
+        var schema = new Schema({
+          aNumber: 10, anArray: ['one', 'two'],
+          _: 'customPrefix'
+        });
+
+        assert.equal(schema.getPrefixed('aNumber'), 'customPrefix.aNumber');
+        assert.equal(schema.getPrefixed('anArray'), 'customPrefix.anArray');
+        done();
+      });
+
+      test('works without a prefix', function(done) {
+        var schema = new Schema({
+          aNumber: 10, anArray: ['one', 'two']
+        });
+
+        assert.equal(schema.getPrefixed('aNumber'), 'aNumber');
+        assert.equal(schema.getPrefixed('anArray'), 'anArray');
         done();
       });
 

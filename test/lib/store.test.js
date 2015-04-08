@@ -41,12 +41,12 @@ experiment('store', function() {
         // accepts state object
         update({foo: 'bam'});
         assert.lengthOf(calls, 1);
-        assert.deepEqual(calls[0], ['bam']);
+        assert.deepEqual(calls[0], {foo: 'bam'});
 
         // accepts key, value style
         update('foo', 'baz');
         assert.lengthOf(calls, 2);
-        assert.deepEqual(calls[1], ['baz']);
+        assert.deepEqual(calls[1], {foo: 'baz'});
 
         done();
       });
@@ -64,11 +64,11 @@ experiment('store', function() {
         });
 
         var p2Calls = [];
-        store.register({bar: 'bar.1'}, function(changes) {
+        store.register({bar: 'bar.1', _: 'pre'}, function(changes) {
           p2Calls.push(changes);
         });
 
-        store.update(['foo.0a', 'bar.0a', 'bar.1a']);
+        store.update({foo: 'foo.0a', bar: 'bar.0a', 'pre.bar': 'bar.1a'});
         assert.lengthOf(p1Calls, 0);
         assert.lengthOf(p2Calls, 0);
 
@@ -91,7 +91,7 @@ experiment('store', function() {
           p1Calls.push(changes);
         });
 
-        store.update(['bogus']);
+        store.update({number: 'bogus'});
         assert.lengthOf(p1Calls, 0);
 
         setTimeout(function() {
@@ -110,7 +110,7 @@ experiment('store', function() {
           p1Calls.push(changes);
         });
 
-        store.update([]);
+        store.update({});
         assert.lengthOf(p1Calls, 0);
 
         setTimeout(function() {
@@ -129,8 +129,8 @@ experiment('store', function() {
           calls.push(changes);
         });
 
-        store.update(['foo.1', 'bar.1']);
-        store.update(['foo.2', 'bar.2']);
+        store.update({foo: 'foo.1', bar: 'bar.1'});
+        store.update({foo: 'foo.2', bar: 'bar.2'});
         assert.lengthOf(calls, 0);
 
         setTimeout(function() {
@@ -152,7 +152,7 @@ experiment('store', function() {
             });
 
         update({foo: 'foo.1', bar: 'bar.1'});
-        store.update(['foo.2', 'bar.2']);
+        store.update({foo: 'foo.2', bar: 'bar.2'});
         assert.lengthOf(calls, 0);
 
         setTimeout(function() {
@@ -174,7 +174,7 @@ experiment('store', function() {
             });
 
         update({foo: 'foo.1', bar: 'bar.1'});
-        store.update(['foo.2', 'bar.1']);
+        store.update({foo: 'foo.2', bar: 'bar.1'});
         assert.lengthOf(calls, 0);
 
         setTimeout(function() {
@@ -196,7 +196,7 @@ experiment('store', function() {
             });
 
         update({foo: 'foo.1', bar: 'bar.1'});
-        store.update(['foo.1', 'bar.1']);
+        store.update({foo: 'foo.1', bar: 'bar.1'});
         assert.lengthOf(calls, 0);
 
         setTimeout(function() {
@@ -219,7 +219,7 @@ experiment('store', function() {
           p2Calls.push(changes);
         });
 
-        store.update(['42', new Date(2).toISOString()]);
+        store.update({number: '42', date: new Date(2).toISOString()});
 
         setTimeout(function() {
           assert.lengthOf(p1Calls, 1);
@@ -235,7 +235,7 @@ experiment('store', function() {
       test('calls providers with existing values', function(done) {
         var store = new Store(noop);
 
-        store.update(['42', new Date(2).toISOString()]);
+        store.update({number: '42', date: new Date(2).toISOString()});
 
         var p1Calls = [];
         store.register({number: 10}, function(changes) {

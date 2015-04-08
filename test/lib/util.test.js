@@ -94,4 +94,26 @@ experiment('util', function() {
 
   });
 
+  experiment('zip()', function() {
+
+    test('creates an array from an object', function(done) {
+      var obj = {foo: 'bar', num: 42};
+      var arr = util.zip(obj);
+      assert.deepEqual(arr, ['foo', 'bar', 'num', 42]);
+      done();
+    });
+
+  });
+
+  experiment('unzip()', function() {
+
+    test('creates an object from an array', function(done) {
+      var arr = ['foo', 'bar', 'num', 42];
+      var obj = util.unzip(arr);
+      assert.deepEqual(obj, {foo: 'bar', num: 42});
+      done();
+    });
+
+  });
+
 });

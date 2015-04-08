@@ -3,24 +3,21 @@ var expect = require('code').expect;
 
 var serializers = require('../../lib/serializers');
 
-var experiment = lab.experiment;
-var test = lab.test;
-
 var enc = encodeURIComponent;
 var dec = decodeURIComponent;
 
-experiment('serializers', function() {
+lab.experiment('serializers', function() {
 
-  experiment('get()', function() {
+  lab.experiment('get()', function() {
     var get = serializers.get;
 
-    test('returns a function for a known type', function(done) {
+    lab.test('returns a function for a known type', function(done) {
       var serialize = get('string');
       expect(serialize).to.be.a.function();
       done();
     });
 
-    test('throws for an unknown type', function(done) {
+    lab.test('throws for an unknown type', function(done) {
       var call = function() {
         get('foo');
       };
@@ -28,13 +25,13 @@ experiment('serializers', function() {
       done();
     });
 
-    test('returns an appropriate serializer for string', function(done) {
+    lab.test('returns an appropriate serializer for string', function(done) {
       var serialize = get('string');
       expect(serialize('foo')).to.equal('foo');
       done();
     });
 
-    test('string serializer throws for non-string', function(done) {
+    lab.test('string serializer throws for non-string', function(done) {
       var serialize = get('string');
       var call = function() {
         serialize(42);
@@ -43,13 +40,13 @@ experiment('serializers', function() {
       done();
     });
 
-    test('returns an appropriate serializer for number', function(done) {
+    lab.test('returns an appropriate serializer for number', function(done) {
       var serialize = get('number');
       expect(serialize(42)).to.equal('42');
       done();
     });
 
-    test('number serializer throws for non-number', function(done) {
+    lab.test('number serializer throws for non-number', function(done) {
       var serialize = get('number');
       var call = function() {
         serialize('foo');
@@ -58,14 +55,14 @@ experiment('serializers', function() {
       done();
     });
 
-    test('returns an appropriate serializer for boolean', function(done) {
+    lab.test('returns an appropriate serializer for boolean', function(done) {
       var serialize = get('boolean');
       expect(serialize(true)).to.equal('1');
       expect(serialize(false)).to.equal('0');
       done();
     });
 
-    test('boolean serializer throws for non-boolean', function(done) {
+    lab.test('boolean serializer throws for non-boolean', function(done) {
       var serialize = get('boolean');
       var call = function() {
         serialize('foo');
@@ -74,7 +71,7 @@ experiment('serializers', function() {
       done();
     });
 
-    test('returns an appropriate serializer for date', function(done) {
+    lab.test('returns an appropriate serializer for date', function(done) {
       var serialize = get('date');
       var then = '2014-06-09T23:57:12.588Z';
       var date = new Date(then);
@@ -82,7 +79,7 @@ experiment('serializers', function() {
       done();
     });
 
-    test('date serializer throws for non-date', function(done) {
+    lab.test('date serializer throws for non-date', function(done) {
       var serialize = get('date');
       var call = function() {
         serialize('foo');
@@ -91,7 +88,7 @@ experiment('serializers', function() {
       done();
     });
 
-    test('returns an appropriate serializer for array', function(done) {
+    lab.test('returns an appropriate serializer for array', function(done) {
       var serialize = get('array');
       var array = ['foo', 42];
       var json = JSON.stringify(array);
@@ -99,7 +96,7 @@ experiment('serializers', function() {
       done();
     });
 
-    test('array serializer throws for non-array', function(done) {
+    lab.test('array serializer throws for non-array', function(done) {
       var serialize = get('array');
       var call = function() {
         serialize('foo');
@@ -108,7 +105,7 @@ experiment('serializers', function() {
       done();
     });
 
-    test('returns an appropriate serializer for object', function(done) {
+    lab.test('returns an appropriate serializer for object', function(done) {
       var serialize = get('object');
       var obj = {foo: 'bar'};
       var json = dec(serialize(obj));

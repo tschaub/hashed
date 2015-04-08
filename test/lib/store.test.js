@@ -3,17 +3,14 @@ var expect = require('code').expect;
 
 var Store = require('../../lib/store').Store;
 
-var experiment = lab.experiment;
-var test = lab.test;
+lab.experiment('store', function() {
 
-experiment('store', function() {
-
-  experiment('Store', function() {
+  lab.experiment('Store', function() {
     var noop = function() {};
 
-    experiment('constructor', function() {
+    lab.experiment('constructor', function() {
 
-      test('creates a new instance', function(done) {
+      lab.test('creates a new instance', function(done) {
         var store = new Store(noop);
         expect(store).to.be.an.instanceof(Store);
         done();
@@ -21,15 +18,15 @@ experiment('store', function() {
 
     });
 
-    experiment('#register()', function() {
+    lab.experiment('#register()', function() {
 
-      test('registers a new provider', function(done) {
+      lab.test('registers a new provider', function(done) {
         var store = new Store(noop);
         store.register({foo: 'bar'}, noop);
         done();
       });
 
-      test('returns a function used to update state', function(done) {
+      lab.test('returns a function used to update state', function(done) {
         var calls = [];
         var store = new Store(function(values) {
           calls.push(values);
@@ -51,7 +48,7 @@ experiment('store', function() {
         done();
       });
 
-      test('throws when registering with a conflicting key', function(done) {
+      lab.test('throws when registering with a conflicting key', function(done) {
         var store = new Store(noop);
         store.register({foo: 'bar'}, noop);
 
@@ -65,9 +62,9 @@ experiment('store', function() {
 
     });
 
-    experiment('#update()', function() {
+    lab.experiment('#update()', function() {
 
-      test('notifies providers of updated values', function(done) {
+      lab.test('notifies providers of updated values', function(done) {
         var store = new Store(noop);
 
         var p1Calls = [];
@@ -95,7 +92,7 @@ experiment('store', function() {
 
       });
 
-      test('uses defaults if string cannot be deserialized', function(done) {
+      lab.test('uses defaults if string cannot be deserialized', function(done) {
         var store = new Store(noop);
 
         var p1Calls = [];
@@ -114,7 +111,7 @@ experiment('store', function() {
 
       });
 
-      test('uses defaults if not enough values provided', function(done) {
+      lab.test('uses defaults if not enough values provided', function(done) {
         var store = new Store(noop);
 
         var p1Calls = [];
@@ -133,7 +130,7 @@ experiment('store', function() {
 
       });
 
-      test('notifies providers once on multiple calls', function(done) {
+      lab.test('notifies providers once on multiple calls', function(done) {
         var store = new Store(noop);
 
         var calls = [];
@@ -153,7 +150,7 @@ experiment('store', function() {
 
       });
 
-      test('notifies providers with updated values', function(done) {
+      lab.test('notifies providers with updated values', function(done) {
         var store = new Store(noop);
 
         var calls = [];
@@ -175,7 +172,7 @@ experiment('store', function() {
 
       });
 
-      test('notification does not include unchanged values', function(done) {
+      lab.test('notification does not include unchanged values', function(done) {
         var store = new Store(noop);
 
         var calls = [];
@@ -197,7 +194,7 @@ experiment('store', function() {
 
       });
 
-      test('no notification if no values changed', function(done) {
+      lab.test('no notification if no values changed', function(done) {
         var store = new Store(noop);
 
         var calls = [];
@@ -218,7 +215,7 @@ experiment('store', function() {
 
       });
 
-      test('deserializes before notifying providers', function(done) {
+      lab.test('deserializes before notifying providers', function(done) {
         var store = new Store(noop);
 
         var p1Calls = [];
@@ -244,7 +241,7 @@ experiment('store', function() {
 
       });
 
-      test('calls providers with existing values', function(done) {
+      lab.test('calls providers with existing values', function(done) {
         var store = new Store(noop);
 
         store.update({number: '42', date: new Date(2).toISOString()});

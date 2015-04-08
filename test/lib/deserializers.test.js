@@ -3,22 +3,18 @@ var expect = require('code').expect;
 
 var deserializers = require('../../lib/deserializers');
 
-var experiment = lab.experiment;
-var test = lab.test;
+lab.experiment('deserializers', function() {
 
-
-experiment('deserializers', function() {
-
-  experiment('get()', function() {
+  lab.experiment('get()', function() {
     var get = deserializers.get;
 
-    test('returns a function for a known type', function(done) {
+    lab.test('returns a function for a known type', function(done) {
       var deserialize = get('string');
       expect(deserialize).to.be.a.function();
       done();
     });
 
-    test('throws for an unknown type', function(done) {
+    lab.test('throws for an unknown type', function(done) {
       var call = function() {
         get('foo');
       };
@@ -26,13 +22,13 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('returns an appropriate deserializer for string', function(done) {
+    lab.test('returns an appropriate deserializer for string', function(done) {
       var deserialize = get('string');
       expect(deserialize('foo')).to.equal('foo');
       done();
     });
 
-    test('string deserializer throws for non-string', function(done) {
+    lab.test('string deserializer throws for non-string', function(done) {
       var deserialize = get('string');
       var call = function() {
         deserialize(10);
@@ -41,7 +37,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('string deserializer throws for empty string', function(done) {
+    lab.test('string deserializer throws for empty string', function(done) {
       var deserialize = get('string');
       var call = function() {
         deserialize('');
@@ -50,13 +46,13 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('returns an appropriate deserializer for number', function(done) {
+    lab.test('returns an appropriate deserializer for number', function(done) {
       var deserialize = get('number');
       expect(deserialize('42')).to.equal(42);
       done();
     });
 
-    test('number deserializer throws for non-string', function(done) {
+    lab.test('number deserializer throws for non-string', function(done) {
       var deserialize = get('number');
       var call = function() {
         deserialize([]);
@@ -65,7 +61,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('number deserializer throws for empty string', function(done) {
+    lab.test('number deserializer throws for empty string', function(done) {
       var deserialize = get('number');
       var call = function() {
         deserialize('');
@@ -74,7 +70,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('number deserializer throws for non-numeric string', function(done) {
+    lab.test('number deserializer throws for non-numeric string', function(done) {
       var deserialize = get('number');
       var call = function() {
         deserialize('foo');
@@ -83,14 +79,14 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('returns an appropriate deserializer for boolean', function(done) {
+    lab.test('returns an appropriate deserializer for boolean', function(done) {
       var deserialize = get('boolean');
       expect(deserialize('1')).to.be.true();
       expect(deserialize('0')).to.be.false();
       done();
     });
 
-    test('boolean deserializer throws for non-boolean', function(done) {
+    lab.test('boolean deserializer throws for non-boolean', function(done) {
       var deserialize = get('boolean');
       var call = function() {
         deserialize('foo');
@@ -99,7 +95,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('boolean deserializer throws for empty string', function(done) {
+    lab.test('boolean deserializer throws for empty string', function(done) {
       var deserialize = get('boolean');
       var call = function() {
         deserialize('');
@@ -108,7 +104,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('returns an appropriate deserializer for date', function(done) {
+    lab.test('returns an appropriate deserializer for date', function(done) {
       var deserialize = get('date');
       var then = '2014-06-09T23:57:12.588Z';
       var date = deserialize(then);
@@ -117,7 +113,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('date deserializer throws for non string', function(done) {
+    lab.test('date deserializer throws for non string', function(done) {
       var deserialize = get('date');
       var call = function() {
         deserialize(10);
@@ -126,7 +122,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('date deserializer throws for empty string', function(done) {
+    lab.test('date deserializer throws for empty string', function(done) {
       var deserialize = get('date');
       var call = function() {
         deserialize('');
@@ -135,7 +131,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('date deserializer throws for invalid date string', function(done) {
+    lab.test('date deserializer throws for invalid date string', function(done) {
       var deserialize = get('date');
       var call = function() {
         deserialize('foo');
@@ -144,13 +140,13 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('returns an appropriate serializer for array', function(done) {
+    lab.test('returns an appropriate serializer for array', function(done) {
       var deserialize = get('array');
       expect(deserialize('["bar", 100]')).to.deep.equal(['bar', 100]);
       done();
     });
 
-    test('array deserializer throws for non string', function(done) {
+    lab.test('array deserializer throws for non string', function(done) {
       var deserialize = get('array');
       var call = function() {
         deserialize(10);
@@ -159,7 +155,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('array deserializer throws for empty string', function(done) {
+    lab.test('array deserializer throws for empty string', function(done) {
       var deserialize = get('array');
       var call = function() {
         deserialize('');
@@ -168,7 +164,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('array deserializer throws for invalid array string', function(done) {
+    lab.test('array deserializer throws for invalid array string', function(done) {
       var deserialize = get('array');
       var call = function() {
         deserialize('foo');
@@ -177,7 +173,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('returns an appropriate deserializer for object', function(done) {
+    lab.test('returns an appropriate deserializer for object', function(done) {
       var deserialize = get('object');
       var json = '{"foo": "bar"}';
       var obj = deserialize(json);
@@ -185,7 +181,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('object deserializer throws for non string', function(done) {
+    lab.test('object deserializer throws for non string', function(done) {
       var deserialize = get('object');
       var call = function() {
         deserialize(10);
@@ -194,7 +190,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('object deserializer throws for empty string', function(done) {
+    lab.test('object deserializer throws for empty string', function(done) {
       var deserialize = get('object');
       var call = function() {
         deserialize('');
@@ -203,7 +199,7 @@ experiment('deserializers', function() {
       done();
     });
 
-    test('object deserializer throws for invalid object', function(done) {
+    lab.test('object deserializer throws for invalid object', function(done) {
       var deserialize = get('object');
       var call = function() {
         deserialize('foo');

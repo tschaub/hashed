@@ -3,18 +3,15 @@ var expect = require('code').expect;
 
 var Schema = require('../../lib/schema').Schema;
 
-var experiment = lab.experiment;
-var test = lab.test;
-
 var dec = decodeURIComponent;
 
-experiment('schema', function() {
+lab.experiment('schema', function() {
 
-  experiment('Schema', function() {
+  lab.experiment('Schema', function() {
 
-    experiment('constructor', function() {
+    lab.experiment('constructor', function() {
 
-      test('creates a new instance', function(done) {
+      lab.test('creates a new instance', function(done) {
         var schema = new Schema({foo: 'bar'});
         expect(schema).to.be.an.instanceof(Schema);
         done();
@@ -22,9 +19,9 @@ experiment('schema', function() {
 
     });
 
-    experiment('#serialize()', function() {
+    lab.experiment('#serialize()', function() {
 
-      test('serializes values', function(done) {
+      lab.test('serializes values', function(done) {
         var schema = new Schema({aNumber: 10, anArray: ['one', 'two']});
         expect(schema.serialize('aNumber', 42)).to.equal('42');
         var json = dec(schema.serialize('anArray', [2, 3]));
@@ -32,13 +29,13 @@ experiment('schema', function() {
         done();
       });
 
-      test('works with unprefixed keys', function(done) {
+      lab.test('works with unprefixed keys', function(done) {
         var schema = new Schema({number: 10, _: 'pre'});
         expect(schema.serialize('number', 42)).to.equal('42');
         done();
       });
 
-      test('calls custom serializer', function(done) {
+      lab.test('calls custom serializer', function(done) {
         var calls = [];
         var schema = new Schema({
           custom: {
@@ -58,7 +55,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('throws for type mismatch', function(done) {
+      lab.test('throws for type mismatch', function(done) {
         var schema = new Schema({aNumber: 10});
         var call = function() {
             schema.serialize('aNumber', 'asdf');
@@ -67,7 +64,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('throws for unknown key', function(done) {
+      lab.test('throws for unknown key', function(done) {
         var schema = new Schema({aNumber: 10});
         var call = function() {
             schema.serialize('foo', 'asdf');
@@ -78,9 +75,9 @@ experiment('schema', function() {
 
     });
 
-    experiment('#deserialize()', function() {
+    lab.experiment('#deserialize()', function() {
 
-      test('deserializes values', function(done) {
+      lab.test('deserializes values', function(done) {
         var schema = new Schema({aNumber: 10, anArray: ['one', 'two']});
         expect(schema.deserialize('aNumber', '42')).to.equal(42);
         var json = '[2, 3]';
@@ -88,7 +85,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('throws for type mismatch', function(done) {
+      lab.test('throws for type mismatch', function(done) {
         var schema = new Schema({aNumber: 10});
         var call = function() {
             schema.deserialize('aNumber', 'asdf');
@@ -97,7 +94,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('throws for unknown key', function(done) {
+      lab.test('throws for unknown key', function(done) {
         var schema = new Schema({aNumber: 10});
         var call = function() {
             schema.deserialize('foo', 'asdf');
@@ -108,21 +105,21 @@ experiment('schema', function() {
 
     });
 
-    experiment('#getDefault()', function() {
+    lab.experiment('#getDefault()', function() {
 
-      test('gets the default for a key', function(done) {
+      lab.test('gets the default for a key', function(done) {
         var schema = new Schema({foo: 'bar'});
         expect(schema.getDefault('foo')).to.equal('bar');
         done();
       });
 
-      test('gets the default given init value', function(done) {
+      lab.test('gets the default given init value', function(done) {
         var schema = new Schema({foo: {init: 'bar'}});
         expect(schema.getDefault('foo')).to.equal('bar');
         done();
       });
 
-      test('gets the default given init function', function(done) {
+      lab.test('gets the default given init function', function(done) {
         var schema = new Schema({
           foo: {
             init: function() {
@@ -134,7 +131,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('throws for unknown key', function(done) {
+      lab.test('throws for unknown key', function(done) {
         var schema = new Schema({foo: 'bar'});
         var call = function() {
             schema.getDefault('asdf');
@@ -145,9 +142,9 @@ experiment('schema', function() {
 
     });
 
-    experiment('#getPrefixed()', function() {
+    lab.experiment('#getPrefixed()', function() {
 
-      test('prepends the prefix', function(done) {
+      lab.test('prepends the prefix', function(done) {
         var schema = new Schema({
           aNumber: 10, anArray: ['one', 'two'],
           _: 'customPrefix'
@@ -158,7 +155,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('works without a prefix', function(done) {
+      lab.test('works without a prefix', function(done) {
         var schema = new Schema({
           aNumber: 10, anArray: ['one', 'two']
         });
@@ -170,9 +167,9 @@ experiment('schema', function() {
 
     });
 
-    experiment('#conflicts()', function() {
+    lab.experiment('#conflicts()', function() {
 
-      test('two unprefixed conflict-free schemas', function(done) {
+      lab.test('two unprefixed conflict-free schemas', function(done) {
         var first = new Schema({
           foo: 'bar',
           number: 42
@@ -188,7 +185,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('two unprefixed conflicting schemas', function(done) {
+      lab.test('two unprefixed conflicting schemas', function(done) {
         var first = new Schema({
           foo: 'bar',
           number: 42
@@ -204,7 +201,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('one unprefixed, one prefixed, no conflicts', function(done) {
+      lab.test('one unprefixed, one prefixed, no conflicts', function(done) {
         var first = new Schema({
           foo: 'bar',
           number: 42
@@ -221,7 +218,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('two prefixed, no conflicts', function(done) {
+      lab.test('two prefixed, no conflicts', function(done) {
         var first = new Schema({
           foo: 'bar',
           number: 42,
@@ -239,7 +236,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('same prefix, no conflicts', function(done) {
+      lab.test('same prefix, no conflicts', function(done) {
         var first = new Schema({
           number: 42,
           _: 'same'
@@ -255,7 +252,7 @@ experiment('schema', function() {
         done();
       });
 
-      test('same prefix, with conflicts', function(done) {
+      lab.test('same prefix, with conflicts', function(done) {
         var first = new Schema({
           number: 42,
           _: 'same'

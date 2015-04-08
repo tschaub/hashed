@@ -1,112 +1,115 @@
-var lab = require('lab');
+var lab = exports.lab = require('lab').script();
+var expect = require('code').expect;
 
 var serializers = require('../../lib/serializers');
-
-var assert = lab.assert;
-var experiment = lab.experiment;
-var test = lab.test;
 
 var enc = encodeURIComponent;
 var dec = decodeURIComponent;
 
-experiment('serializers', function() {
+lab.experiment('serializers', function() {
 
-  experiment('get()', function() {
+  lab.experiment('get()', function() {
     var get = serializers.get;
 
-    test('returns a function for a known type', function(done) {
+    lab.test('returns a function for a known type', function(done) {
       var serialize = get('string');
-      assert.isFunction(serialize);
+      expect(serialize).to.be.a.function();
       done();
     });
 
-    test('throws for an unknown type', function(done) {
-      assert.throws(function() {
+    lab.test('throws for an unknown type', function(done) {
+      var call = function() {
         get('foo');
-      }, 'Unable to serialize type: foo');
+      };
+      expect(call).to.throw('Unable to serialize type: foo');
       done();
     });
 
-    test('returns an appropriate serializer for string', function(done) {
+    lab.test('returns an appropriate serializer for string', function(done) {
       var serialize = get('string');
-      assert.equal(serialize('foo'), 'foo');
+      expect(serialize('foo')).to.equal('foo');
       done();
     });
 
-    test('string serializer throws for non-string', function(done) {
+    lab.test('string serializer throws for non-string', function(done) {
       var serialize = get('string');
-      assert.throws(function() {
+      var call = function() {
         serialize(42);
-      }, 'Expected string to serialize: 42');
+      };
+      expect(call).to.throw('Expected string to serialize: 42');
       done();
     });
 
-    test('returns an appropriate serializer for number', function(done) {
+    lab.test('returns an appropriate serializer for number', function(done) {
       var serialize = get('number');
-      assert.equal(serialize(42), '42');
+      expect(serialize(42)).to.equal('42');
       done();
     });
 
-    test('number serializer throws for non-number', function(done) {
+    lab.test('number serializer throws for non-number', function(done) {
       var serialize = get('number');
-      assert.throws(function() {
+      var call = function() {
         serialize('foo');
-      }, 'Expected number to serialize: foo');
+      };
+      expect(call).to.throw('Expected number to serialize: foo');
       done();
     });
 
-    test('returns an appropriate serializer for boolean', function(done) {
+    lab.test('returns an appropriate serializer for boolean', function(done) {
       var serialize = get('boolean');
-      assert.equal(serialize(true), '1');
-      assert.equal(serialize(false), '0');
+      expect(serialize(true)).to.equal('1');
+      expect(serialize(false)).to.equal('0');
       done();
     });
 
-    test('boolean serializer throws for non-boolean', function(done) {
+    lab.test('boolean serializer throws for non-boolean', function(done) {
       var serialize = get('boolean');
-      assert.throws(function() {
+      var call = function() {
         serialize('foo');
-      }, 'Expected boolean to serialize: foo');
+      };
+      expect(call).to.throw('Expected boolean to serialize: foo');
       done();
     });
 
-    test('returns an appropriate serializer for date', function(done) {
+    lab.test('returns an appropriate serializer for date', function(done) {
       var serialize = get('date');
       var then = '2014-06-09T23:57:12.588Z';
       var date = new Date(then);
-      assert.equal(dec(serialize(date)), then);
+      expect(dec(serialize(date))).to.equal(then);
       done();
     });
 
-    test('date serializer throws for non-date', function(done) {
+    lab.test('date serializer throws for non-date', function(done) {
       var serialize = get('date');
-      assert.throws(function() {
+      var call = function() {
         serialize('foo');
-      }, 'Expected date to serialize: foo');
+      };
+      expect(call).to.throw('Expected date to serialize: foo');
       done();
     });
 
-    test('returns an appropriate serializer for array', function(done) {
+    lab.test('returns an appropriate serializer for array', function(done) {
       var serialize = get('array');
       var array = ['foo', 42];
       var json = JSON.stringify(array);
-      assert.equal(serialize(array), enc(json));
+      expect(serialize(array)).to.equal(enc(json));
       done();
     });
 
-    test('array serializer throws for non-array', function(done) {
+    lab.test('array serializer throws for non-array', function(done) {
       var serialize = get('array');
-      assert.throws(function() {
+      var call = function() {
         serialize('foo');
-      }, 'Expected array to serialize: foo');
+      };
+      expect(call).to.throw('Expected array to serialize: foo');
       done();
     });
 
-    test('returns an appropriate serializer for object', function(done) {
+    lab.test('returns an appropriate serializer for object', function(done) {
       var serialize = get('object');
       var obj = {foo: 'bar'};
       var json = dec(serialize(obj));
-      assert.deepEqual(obj, JSON.parse(json));
+      expect(obj).to.deep.equal(JSON.parse(json));
       done();
     });
 

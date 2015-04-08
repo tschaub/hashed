@@ -103,5 +103,48 @@
         }());
       </script>
     </section>
+    <section>
+      <h2>View 3</h2>
+      <p>
+        This form represents the state of the third view.  To avoid collisions
+        with keys registered by other providers, a prefix can be added to the
+        keys in the hash.  The special <code>_</code> (underscore) field is
+        used as the prefix for all other fields.</p>
+      <form id="view-3" class="pure-form pure-form-aligned">
+        <fieldset>
+          <div class="pure-control-group">
+            <label for="date">date</label>
+            <input type="date" name="date">
+          </div>
+        </fieldset>
+      </form>
+      <script>
+        (function() {
+
+          var elements = document.getElementById('view-3').elements;
+
+          var config = {
+            date: '2014-10-28',
+            _: 'view-3'
+          };
+
+          var update = hashed.register(config, function(state) {
+            // called whenever the state changes
+            for (var name in state) {
+              elements.namedItem(name).value = state[name];
+            }
+          });
+
+          for (var name in config) {
+            if (name !== '_') {
+              elements.namedItem(name).addEventListener('change', function(evt) {
+                update(evt.target.name, evt.target.value);
+              });
+            }
+          }
+
+        }());
+      </script>
+    </section>
   </body>
 </html>

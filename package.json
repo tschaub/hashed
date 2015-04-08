@@ -32,9 +32,10 @@
   "main": "lib/index.js",
   "devDependencies": {
     "browserify": "~6.2.0",
+    "code": "^1.4.0",
     "eslint": "^0.18.0",
     "http-server": "^0.7.2",
-    "lab": "~3.2.1",
+    "lab": "^5.5.1",
     "uglify-js": "^2.4.15",
     "watchy": "^0.5.3"
   }

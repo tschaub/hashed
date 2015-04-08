@@ -1,8 +1,8 @@
-var lab = require('lab');
+var lab = exports.lab = require('lab').script();
+var expect = require('code').expect;
 
 var util = require('../../lib/util');
 
-var assert = lab.assert;
 var experiment = lab.experiment;
 var test = lab.test;
 
@@ -12,54 +12,54 @@ experiment('util', function() {
     var typeOf = util.typeOf;
 
     test('returns "number" for numbers', function(done) {
-      assert.equal('number', typeOf(42));
-      assert.equal('number', typeOf(0));
+      expect(typeOf(42)).to.equal('number');
+      expect(typeOf(0)).to.equal('number');
       done();
     });
 
     test('returns "string" for strings', function(done) {
-      assert.equal('string', typeOf('foo'));
-      assert.equal('string', typeOf(''));
+      expect(typeOf('foo')).to.equal('string');
+      expect(typeOf('')).to.equal('string');
       done();
     });
 
     test('returns "array" for array', function(done) {
-      assert.equal('array', typeOf(['foo', 'bar']));
-      assert.equal('array', typeOf([]));
+      expect(typeOf(['foo', 'bar'])).to.equal('array');
+      expect(typeOf([])).to.equal('array');
       done();
     });
 
     test('returns "date" for date', function(done) {
-      assert.equal('date', typeOf(new Date()));
-      assert.equal('date', typeOf(new Date(0)));
+      expect(typeOf(new Date())).to.equal('date');
+      expect(typeOf(new Date(0))).to.equal('date');
       done();
     });
 
     test('returns "regexp" for RegExp', function(done) {
-      assert.equal('regexp', typeOf(/foo/));
-      assert.equal('regexp', typeOf(new RegExp('foo')));
+      expect(typeOf(/foo/)).to.equal('regexp');
+      expect(typeOf(new RegExp('foo'))).to.equal('regexp');
       done();
     });
 
     test('returns "error" for Error', function(done) {
-      assert.equal('error', typeOf(new Error('foo')));
-      assert.equal('error', typeOf(new Error()));
+      expect(typeOf(new Error('foo'))).to.equal('error');
+      expect(typeOf(new Error())).to.equal('error');
       done();
     });
 
     test('returns "object" for object', function(done) {
-      assert.equal('object', typeOf({}));
+      expect(typeOf({})).to.equal('object');
       done();
     });
 
     test('returns "null" for null', function(done) {
-      assert.equal('null', typeOf(null));
+      expect(typeOf(null)).to.equal('null');
       done();
     });
 
     test('returns "undefined" for undefined', function(done) {
-      assert.equal('undefined', typeOf());
-      assert.equal('undefined', typeOf(undefined));
+      expect(typeOf()).to.equal('undefined');
+      expect(typeOf(undefined)).to.equal('undefined');
       done();
     });
 
@@ -72,7 +72,7 @@ experiment('util', function() {
       var source = {foo: 'bar'};
       var dest = {};
       extend(dest, source);
-      assert.equal(dest.foo, 'bar');
+      expect(dest.foo).to.equal('bar');
       done();
     });
 
@@ -80,7 +80,7 @@ experiment('util', function() {
       var source = {foo: 'bar'};
       var dest = {foo: 'bam'};
       extend(dest, source);
-      assert.equal(dest.foo, 'bar');
+      expect(dest.foo).to.equal('bar');
       done();
     });
 
@@ -88,7 +88,7 @@ experiment('util', function() {
       var source = {foo: 'bar'};
       var dest = {foo: 'bam'};
       var got = extend(dest, source);
-      assert.equal(got, dest);
+      expect(got).to.equal(dest);
       done();
     });
 
@@ -99,7 +99,7 @@ experiment('util', function() {
     test('creates an array from an object', function(done) {
       var obj = {foo: 'bar', num: 42};
       var arr = util.zip(obj);
-      assert.deepEqual(arr, ['foo', 'bar', 'num', 42]);
+      expect(arr).to.deep.equal(['foo', 'bar', 'num', 42]);
       done();
     });
 
@@ -110,7 +110,7 @@ experiment('util', function() {
     test('creates an object from an array', function(done) {
       var arr = ['foo', 'bar', 'num', 42];
       var obj = util.unzip(arr);
-      assert.deepEqual(obj, {foo: 'bar', num: 42});
+      expect(obj).to.deep.equal({foo: 'bar', num: 42});
       done();
     });
 

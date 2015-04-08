@@ -1,8 +1,8 @@
-var lab = require('lab');
+var lab = exports.lab = require('lab').script();
+var expect = require('code').expect;
 
 var deserializers = require('../../lib/deserializers');
 
-var assert = lab.assert;
 var experiment = lab.experiment;
 var test = lab.test;
 
@@ -14,89 +14,97 @@ experiment('deserializers', function() {
 
     test('returns a function for a known type', function(done) {
       var deserialize = get('string');
-      assert.isFunction(deserialize);
+      expect(deserialize).to.be.a.function();
       done();
     });
 
     test('throws for an unknown type', function(done) {
-      assert.throws(function() {
+      var call = function() {
         get('foo');
-      }, 'Unable to deserialize type: foo');
+      };
+      expect(call).to.throw('Unable to deserialize type: foo');
       done();
     });
 
     test('returns an appropriate deserializer for string', function(done) {
       var deserialize = get('string');
-      assert.equal(deserialize('foo'), 'foo');
+      expect(deserialize('foo')).to.equal('foo');
       done();
     });
 
     test('string deserializer throws for non-string', function(done) {
       var deserialize = get('string');
-      assert.throws(function() {
+      var call = function() {
         deserialize(10);
-      }, 'Expected string to deserialize: 10');
+      };
+      expect(call).to.throw('Expected string to deserialize: 10');
       done();
     });
 
     test('string deserializer throws for empty string', function(done) {
       var deserialize = get('string');
-      assert.throws(function() {
+      var call = function() {
         deserialize('');
-      }, 'Expected string to deserialize: ');
+      };
+      expect(call).to.throw('Expected string to deserialize: ');
       done();
     });
 
     test('returns an appropriate deserializer for number', function(done) {
       var deserialize = get('number');
-      assert.equal(deserialize('42'), 42);
+      expect(deserialize('42')).to.equal(42);
       done();
     });
 
     test('number deserializer throws for non-string', function(done) {
       var deserialize = get('number');
-      assert.throws(function() {
+      var call = function() {
         deserialize([]);
-      }, 'Expected string to deserialize: ');
+      };
+      expect(call).to.throw('Expected string to deserialize: ');
       done();
     });
 
     test('number deserializer throws for empty string', function(done) {
       var deserialize = get('number');
-      assert.throws(function() {
+      var call = function() {
         deserialize('');
-      }, 'Expected string to deserialize: ');
+      };
+      expect(call).to.throw('Expected string to deserialize: ');
       done();
     });
 
     test('number deserializer throws for non-numeric string', function(done) {
       var deserialize = get('number');
-      assert.throws(function() {
+      var call = function() {
         deserialize('foo');
-      }, 'Expected to deserialize a number: foo');
+      };
+      expect(call).to.throw('Expected to deserialize a number: foo');
       done();
     });
 
     test('returns an appropriate deserializer for boolean', function(done) {
       var deserialize = get('boolean');
-      assert.equal(deserialize('1'), true);
-      assert.equal(deserialize('0'), false);
+      expect(deserialize('1')).to.be.true();
+      expect(deserialize('0')).to.be.false();
       done();
     });
 
     test('boolean deserializer throws for non-boolean', function(done) {
       var deserialize = get('boolean');
-      assert.throws(function() {
+      var call = function() {
         deserialize('foo');
-      }, 'Expected "1" or "0" for boolean: ');
+      };
+      expect(call).to.throw('Expected "1" or "0" for boolean: foo');
       done();
     });
 
     test('boolean deserializer throws for empty string', function(done) {
       var deserialize = get('boolean');
-      assert.throws(function() {
+      var call = function() {
         deserialize('');
-      }, 'Expected string to deserialize: ');
+      };
+      expect(call).to.throw('Expected string to deserialize: ');
       done();
     });
 
@@ -104,62 +112,68 @@ experiment('deserializers', function() {
       var deserialize = get('date');
       var then = '2014-06-09T23:57:12.588Z';
       var date = deserialize(then);
-      assert.instanceOf(date, Date);
-      assert.equal(date.getTime(), new Date(then).getTime());
+      expect(date).to.be.a.date();
+      expect(date.getTime()).to.equal(new Date(then).getTime());
       done();
     });
 
     test('date deserializer throws for non string', function(done) {
       var deserialize = get('date');
-      assert.throws(function() {
+      var call = function() {
         deserialize(10);
-      }, 'Expected string to deserialize: 10');
+      };
+      expect(call).to.throw('Expected string to deserialize: 10');
       done();
     });
 
     test('date deserializer throws for empty string', function(done) {
       var deserialize = get('date');
-      assert.throws(function() {
+      var call = function() {
         deserialize('');
-      }, 'Expected string to deserialize: ');
+      };
+      expect(call).to.throw('Expected string to deserialize: ');
       done();
     });
 
     test('date deserializer throws for invalid date string', function(done) {
       var deserialize = get('date');
-      assert.throws(function() {
+      var call = function() {
         deserialize('foo');
-      }, 'Expected to deserialize a date: foo');
+      };
+      expect(call).to.throw('Expected to deserialize a date: foo');
       done();
     });
 
     test('returns an appropriate serializer for array', function(done) {
       var deserialize = get('array');
-      assert.deepEqual(deserialize('["bar", 100]'), ['bar', 100]);
+      expect(deserialize('["bar", 100]')).to.deep.equal(['bar', 100]);
       done();
     });
 
     test('array deserializer throws for non string', function(done) {
       var deserialize = get('array');
-      assert.throws(function() {
+      var call = function() {
         deserialize(10);
-      }, 'Expected string to deserialize: 10');
+      };
+      expect(call).to.throw('Expected string to deserialize: 10');
       done();
     });
 
     test('array deserializer throws for empty string', function(done) {
       var deserialize = get('array');
-      assert.throws(function() {
+      var call = function() {
         deserialize('');
-      }, 'Expected string to deserialize: ');
+      };
+      expect(call).to.throw('Expected string to deserialize: ');
       done();
     });
 
     test('array deserializer throws for invalid array string', function(done) {
       var deserialize = get('array');
-      assert.throws(function() {
+      var call = function() {
         deserialize('foo');
-      }, 'Expected to deserialize an array: foo');
+      };
+      expect(call).to.throw('Expected to deserialize an array: foo');
       done();
     });
 
@@ -167,31 +181,34 @@ experiment('deserializers', function() {
       var deserialize = get('object');
       var json = '{"foo": "bar"}';
       var obj = deserialize(json);
-      assert.deepEqual(obj, {foo: 'bar'});
+      expect(obj).to.deep.equal({foo: 'bar'});
       done();
     });
 
     test('object deserializer throws for non string', function(done) {
       var deserialize = get('object');
-      assert.throws(function() {
+      var call = function() {
         deserialize(10);
-      }, 'Expected string to deserialize: 10');
+      };
+      expect(call).to.throw('Expected string to deserialize: 10');
       done();
     });
 
     test('object deserializer throws for empty string', function(done) {
       var deserialize = get('object');
-      assert.throws(function() {
+      var call = function() {
         deserialize('');
-      }, 'Expected string to deserialize: ');
+      };
+      expect(call).to.throw('Expected string to deserialize: ');
       done();
     });
 
     test('object deserializer throws for invalid object', function(done) {
       var deserialize = get('object');
-      assert.throws(function() {
+      var call = function() {
         deserialize('foo');
-      }, 'Expected to deserialize an object: foo');
+      };
+      expect(call).to.throw('Expected to deserialize an object: foo');
       done();
     });
 

@@ -1,8 +1,8 @@
-var lab = require('lab');
+var lab = exports.lab = require('lab').script();
+var expect = require('code').expect;
 
 var Store = require('../../lib/store').Store;
 
-var assert = lab.assert;
 var experiment = lab.experiment;
 var test = lab.test;
 
@@ -15,7 +15,7 @@ experiment('store', function() {
 
       test('creates a new instance', function(done) {
         var store = new Store(noop);
-        assert.instanceOf(store, Store);
+        expect(store).to.be.an.instanceof(Store);
         done();
       });
 
@@ -36,17 +36,17 @@ experiment('store', function() {
         });
         var update = store.register({foo: 'bar'}, noop);
 
-        assert.isFunction(update);
+        expect(update).to.be.a.function();
 
         // accepts state object
         update({foo: 'bam'});
-        assert.lengthOf(calls, 1);
-        assert.deepEqual(calls[0], {foo: 'bam'});
+        expect(calls).to.have.length(1);
+        expect(calls[0]).to.deep.equal({foo: 'bam'});
 
         // accepts key, value style
         update('foo', 'baz');
-        assert.lengthOf(calls, 2);
-        assert.deepEqual(calls[1], {foo: 'baz'});
+        expect(calls).to.have.length(2);
+        expect(calls[1]).to.deep.equal({foo: 'baz'});
 
         done();
       });
@@ -69,15 +69,15 @@ experiment('store', function() {
         });
 
         store.update({foo: 'foo.0a', bar: 'bar.0a', 'pre.bar': 'bar.1a'});
-        assert.lengthOf(p1Calls, 0);
-        assert.lengthOf(p2Calls, 0);
+        expect(p1Calls).to.have.length(0);
+        expect(p2Calls).to.have.length(0);
 
         setTimeout(function() {
-          assert.lengthOf(p1Calls, 1);
-          assert.deepEqual(p1Calls[0], {foo: 'foo.0a', bar: 'bar.0a'});
+          expect(p1Calls).to.have.length(1);
+          expect(p1Calls[0]).to.deep.equal({foo: 'foo.0a', bar: 'bar.0a'});
 
-          assert.lengthOf(p2Calls, 1);
-          assert.deepEqual(p2Calls[0], {bar: 'bar.1a'});
+          expect(p2Calls).to.have.length(1);
+          expect(p2Calls[0]).to.deep.equal({bar: 'bar.1a'});
           done();
         }, 0);
 
@@ -92,11 +92,11 @@ experiment('store', function() {
         });
 
         store.update({number: 'bogus'});
-        assert.lengthOf(p1Calls, 0);
+        expect(p1Calls).to.have.length(0);
 
         setTimeout(function() {
-          assert.lengthOf(p1Calls, 1);
-          assert.deepEqual(p1Calls[0], {number: 42});
+          expect(p1Calls).to.have.length(1);
+          expect(p1Calls[0]).to.deep.equal({number: 42});
           done();
         }, 0);
 
@@ -111,11 +111,11 @@ experiment('store', function() {
         });
 
         store.update({});
-        assert.lengthOf(p1Calls, 0);
+        expect(p1Calls).to.have.length(0);
 
         setTimeout(function() {
-          assert.lengthOf(p1Calls, 1);
-          assert.deepEqual(p1Calls[0], {number: 42});
+          expect(p1Calls).to.have.length(1);
+          expect(p1Calls[0]).to.deep.equal({number: 42});
           done();
         }, 0);
 
@@ -131,11 +131,11 @@ experiment('store', function() {
 
         store.update({foo: 'foo.1', bar: 'bar.1'});
         store.update({foo: 'foo.2', bar: 'bar.2'});
-        assert.lengthOf(calls, 0);
+        expect(calls).to.have.length(0);
 
         setTimeout(function() {
-          assert.lengthOf(calls, 1);
-          assert.deepEqual(calls[0], {foo: 'foo.2', bar: 'bar.2'});
+          expect(calls).to.have.length(1);
+          expect(calls[0]).to.deep.equal({foo: 'foo.2', bar: 'bar.2'});
           done();
         }, 0);
 
@@ -153,11 +153,11 @@ experiment('store', function() {
 
         update({foo: 'foo.1', bar: 'bar.1'});
         store.update({foo: 'foo.2', bar: 'bar.2'});
-        assert.lengthOf(calls, 0);
+        expect(calls).to.have.length(0);
 
         setTimeout(function() {
-          assert.lengthOf(calls, 1);
-          assert.deepEqual(calls[0], {foo: 'foo.2', bar: 'bar.2'});
+          expect(calls).to.have.length(1);
+          expect(calls[0]).to.deep.equal({foo: 'foo.2', bar: 'bar.2'});
           done();
         }, 0);
 
@@ -175,11 +175,11 @@ experiment('store', function() {
 
         update({foo: 'foo.1', bar: 'bar.1'});
         store.update({foo: 'foo.2', bar: 'bar.1'});
-        assert.lengthOf(calls, 0);
+        expect(calls).to.have.length(0);
 
         setTimeout(function() {
-          assert.lengthOf(calls, 1);
-          assert.deepEqual(calls[0], {foo: 'foo.2'});
+          expect(calls).to.have.length(1);
+          expect(calls[0]).to.deep.equal({foo: 'foo.2'});
           done();
         }, 0);
 
@@ -197,10 +197,10 @@ experiment('store', function() {
 
         update({foo: 'foo.1', bar: 'bar.1'});
         store.update({foo: 'foo.1', bar: 'bar.1'});
-        assert.lengthOf(calls, 0);
+        expect(calls).to.have.length(0);
 
         setTimeout(function() {
-          assert.lengthOf(calls, 0);
+          expect(calls).to.have.length(0);
           done();
         }, 0);
 
@@ -222,11 +222,11 @@ experiment('store', function() {
         store.update({number: '42', date: new Date(2).toISOString()});
 
         setTimeout(function() {
-          assert.lengthOf(p1Calls, 1);
-          assert.deepEqual(p1Calls[0], {number: 42});
+          expect(p1Calls).to.have.length(1);
+          expect(p1Calls[0]).to.deep.equal({number: 42});
 
-          assert.lengthOf(p2Calls, 1);
-          assert.deepEqual(p2Calls[0], {date: new Date(2)});
+          expect(p2Calls).to.have.length(1);
+          expect(p2Calls[0]).to.deep.equal({date: new Date(2)});
           done();
         }, 0);
 
@@ -247,15 +247,15 @@ experiment('store', function() {
           p2Calls.push(changes);
         });
 
-        assert.lengthOf(p1Calls, 0);
-        assert.lengthOf(p2Calls, 0);
+        expect(p1Calls).to.have.length(0);
+        expect(p2Calls).to.have.length(0);
 
         setTimeout(function() {
-          assert.lengthOf(p1Calls, 1);
-          assert.deepEqual(p1Calls[0], {number: 42});
+          expect(p1Calls).to.have.length(1);
+          expect(p1Calls[0]).to.deep.equal({number: 42});
 
-          assert.lengthOf(p2Calls, 1);
-          assert.deepEqual(p2Calls[0], {date: new Date(2)});
+          expect(p2Calls).to.have.length(1);
+          expect(p2Calls[0]).to.deep.equal({date: new Date(2)});
           done();
         }, 0);
 

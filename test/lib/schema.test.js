@@ -199,8 +199,8 @@ experiment('schema', function() {
           digit: 42
         });
 
-        expect(first.conflicts(second)).to.be.true();
-        expect(second.conflicts(first)).to.be.true();
+        expect(first.conflicts(second)).to.equal('foo');
+        expect(second.conflicts(first)).to.equal('foo');
         done();
       });
 
@@ -252,6 +252,22 @@ experiment('schema', function() {
 
         expect(first.conflicts(second)).to.be.false();
         expect(second.conflicts(first)).to.be.false();
+        done();
+      });
+
+      test('same prefix, with conflicts', function(done) {
+        var first = new Schema({
+          number: 42,
+          _: 'same'
+        });
+
+        var second = new Schema({
+          number: 10,
+          _: 'same'
+        });
+
+        expect(first.conflicts(second)).to.equal('same.number');
+        expect(second.conflicts(first)).to.equal('same.number');
         done();
       });
 

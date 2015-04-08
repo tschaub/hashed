@@ -51,6 +51,18 @@ experiment('store', function() {
         done();
       });
 
+      test('throws when registering with a conflicting key', function(done) {
+        var store = new Store(noop);
+        store.register({foo: 'bar'}, noop);
+
+        var call = function() {
+          store.register({foo: 'bam'}, noop);
+        };
+        expect(call).to.throw(
+            'Provider already registered using the same name: foo');
+        done();
+      });
+
     });
 
     experiment('#update()', function() {

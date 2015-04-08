@@ -22,22 +22,6 @@ experiment('schema', function() {
 
     });
 
-    experiment('#getLength()', function() {
-
-      test('returns the number of fields', function(done) {
-        var schema = new Schema({foo: 'bar', baz: 'bam'});
-        expect(schema.getLength()).to.equal(2);
-        done();
-      });
-
-      test('ignores the prefix', function(done) {
-        var schema = new Schema({foo: 'bar', baz: 'bam', _: 'pre'});
-        expect(schema.getLength()).to.equal(2);
-        done();
-      });
-
-    });
-
     experiment('#serialize()', function() {
 
       test('serializes values', function(done) {

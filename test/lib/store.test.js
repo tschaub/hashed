@@ -18,6 +18,48 @@ lab.experiment('store', function() {
 
     });
 
+    lab.experiment('#unregister()', function() {
+
+      lab.test('allows a provider to be removed', function(done) {
+        var store = new Store(noop);
+
+        var calls = [];
+        var callback = function(changes) {
+          calls.push(changes);
+        };
+        store.register({foo: 'bar'}, callback);
+
+        store.unregister(callback);
+        store.update({foo: 'bam'});
+
+        setTimeout(function() {
+          expect(calls).to.have.length(0);
+          done();
+        }, 0);
+      });
+
+      lab.test('causes unregistered provider update to throw', function(done) {
+        var store = new Store(noop);
+
+        var calls = [];
+        var callback = function(changes) {
+          calls.push(changes);
+        };
+        var update = store.register({foo: 'bar'}, callback);
+
+        store.unregister(callback);
+
+        var call = function() {
+          update({foo: 'bam'});
+        };
+        expect(call).to.throw(
+            'Unregistered provider attempting to update state');
+        done();
+
+      });
+
+    });
+
     lab.experiment('#register()', function() {
 
       lab.test('registers a new provider', function(done) {

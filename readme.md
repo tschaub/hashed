@@ -22,7 +22,7 @@ If you're using a non-CommonJS module loader or just plain `<script>` tags, the 
 
 ### `hashed.register`
 
-The `hashed` module exports a single `register` function that is to be called by components that want to initialize their state by deserializing values from the URL hash or persist their state by serializing values to the URL hash.  Multiple components (that may not know about one another) can register for "slots" in the hash.
+The `hashed` module exports a `register` function that is to be called by components that want to initialize their state by deserializing values from the URL hash or persist their state by serializing values to the URL hash.  Multiple components (that may not know about one another) can register for "slots" in the hash.
 
 The `register` function takes two arguments:
 
@@ -34,6 +34,11 @@ The `register` function returns a function:
 
  * `function(Object)` A function that should be called whenever a component's state changes.  The URL hash will be updated with serialized versions of the state values.
 
+### `hashed.unregister`
+
+The `unregister` function is to stop synchronizing state with the URL hash.  It should be called with the same `listener` function passed to the `register` function.
+
+
 ## Example
 
 ```js
@@ -43,16 +48,23 @@ var config = {
   numberValue: 42
 };
 
-var update = hashed.register(config, function(hash) {
+function listener(hash) {
   // called when the URL hash is updated
   // the hash object includes any changed values
-});
+}
+
+// register your listener for hash changes
+var update = hashed.register(config, listener);
 
 // call the update function when you want to have the URL hash
 // updated with some new state
 update({
   stringValue: 'bar'
 });
+
+// unregister when you no longer want to be notified of changes
+hashed.unregister(listener);
+
 ```
 
 [![Current Status](https://secure.travis-ci.org/tschaub/hashed.png?branch=master)](https://travis-ci.org/tschaub/hashed)

@@ -69,25 +69,64 @@ lab.experiment('store', function() {
       });
 
       lab.test('returns a function used to update state', function(done) {
+        var store = new Store(noop);
+        var update = store.register({foo: 'bar'}, noop);
+
+        expect(update).to.be.a.function();
+        done();
+      });
+
+      lab.test('calls callback asynchronously on update', function(done) {
         var calls = [];
         var store = new Store(function(values) {
           calls.push(values);
         });
-        var update = store.register({foo: 'bar'}, noop);
 
-        expect(update).to.be.a.function();
+        var update = store.register({foo: 'bar'}, noop);
 
         // accepts state object
         update({foo: 'bam'});
-        expect(calls).to.have.length(1);
-        expect(calls[0]).to.deep.equal({foo: 'bam'});
+        setTimeout(function() {
+          expect(calls).to.have.length(1);
+          expect(calls[0]).to.deep.equal({foo: 'bam'});
+
+          done();
+        }, 5);
+      });
+
+      lab.test('calls callback asynchronously on update', function(done) {
+        var calls = [];
+        var store = new Store(function(values) {
+          calls.push(values);
+        });
+
+        var update = store.register({foo: 'bar'}, noop);
 
         // accepts key, value style
         update('foo', 'baz');
-        expect(calls).to.have.length(2);
-        expect(calls[1]).to.deep.equal({foo: 'baz'});
+        setTimeout(function() {
+          expect(calls).to.have.length(1);
+          expect(calls[0]).to.deep.equal({foo: 'baz'});
+          done();
+        }, 5);
+      });
 
-        done();
+      lab.test('debounces callback calls', function(done) {
+        var calls = [];
+        var store = new Store(function(values) {
+          calls.push(values);
+        });
+
+        var update = store.register({foo: 'bar'}, noop);
+
+        update({foo: 'bam'});
+        update({foo: 'baz'});
+
+        setTimeout(function() {
+          expect(calls).to.have.length(1);
+          expect(calls[0]).to.deep.equal({foo: 'baz'});
+          done();
+        }, 5);
       });
 
       lab.test('throws when registering with a conflicting key', function(done) {

@@ -58,7 +58,7 @@ lab.experiment('schema', function() {
       lab.test('throws for type mismatch', function(done) {
         var schema = new Schema({aNumber: 10});
         var call = function() {
-            schema.serialize('aNumber', 'asdf');
+          schema.serialize('aNumber', 'asdf');
         };
         expect(call).to.throw('Expected number to serialize: asdf');
         done();
@@ -67,7 +67,7 @@ lab.experiment('schema', function() {
       lab.test('throws for unknown key', function(done) {
         var schema = new Schema({aNumber: 10});
         var call = function() {
-            schema.serialize('foo', 'asdf');
+          schema.serialize('foo', 'asdf');
         };
         expect(call).to.throw('Unknown key: foo');
         done();
@@ -88,7 +88,7 @@ lab.experiment('schema', function() {
       lab.test('throws for type mismatch', function(done) {
         var schema = new Schema({aNumber: 10});
         var call = function() {
-            schema.deserialize('aNumber', 'asdf');
+          schema.deserialize('aNumber', 'asdf');
         };
         expect(call).to.throw('Expected to deserialize a number: asdf');
         done();
@@ -97,7 +97,7 @@ lab.experiment('schema', function() {
       lab.test('throws for unknown key', function(done) {
         var schema = new Schema({aNumber: 10});
         var call = function() {
-            schema.deserialize('foo', 'asdf');
+          schema.deserialize('foo', 'asdf');
         };
         expect(call).to.throw('Unknown key: foo');
         done();
@@ -134,7 +134,7 @@ lab.experiment('schema', function() {
       lab.test('throws for unknown key', function(done) {
         var schema = new Schema({foo: 'bar'});
         var call = function() {
-            schema.getDefault('asdf');
+          schema.getDefault('asdf');
         };
         expect(call).to.throw('Unknown key: asdf');
         done();

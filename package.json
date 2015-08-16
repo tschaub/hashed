@@ -26,12 +26,12 @@
   },
   "main": "lib/index.js",
   "devDependencies": {
-    "browserify": "~6.2.0",
-    "code": "^1.4.0",
+    "browserify": "~11.0.1",
+    "code": "^1.5.0",
     "eslint": "^0.18.0",
-    "http-server": "^0.7.2",
-    "lab": "^5.5.1",
-    "uglify-js": "^2.4.15",
-    "watchy": "^0.5.3"
+    "http-server": "^0.8.0",
+    "lab": "^5.15.1",
+    "uglify-js": "^2.4.24",
+    "watchy": "^0.6.2"
   }
 }

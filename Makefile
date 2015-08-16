@@ -30,12 +30,5 @@ node_modules/.time: package.json
 help:
 	@echo ""
 	@echo "make		- builds hashed.js and hashed.min.js"
-	@echo "make publish	- publish build artifacts"
 	@echo "make clean	- remove build artifacts"
 	@echo ""
-
-# Publish a new release
-# (assumes `npm version && git push --tags origin` has been run first)
-.PHONY: publish
-publish: clean dist
-	@npm publish

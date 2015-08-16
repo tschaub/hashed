@@ -21,9 +21,10 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "http-server . & watchy --watch package.json,lib -- make",
+    "start": "watchy --watch package.json,lib,test -- npm test",
     "pretest": "eslint lib test",
-    "test": "lab -t 100 test"
+    "test": "lab -t 100 test",
+    "prepublish": "in-publish && make || in-install"
   },
   "main": "lib/index.js",
   "devDependencies": {
@@ -31,7 +32,7 @@
     "code": "^1.5.0",
     "eslint": "^1.1.0",
     "eslint-config-tschaub": "^2.0.0",
-    "http-server": "^0.8.0",
+    "in-publish": "^2.0.0",
     "lab": "^5.15.1",
     "uglify-js": "^2.4.24",
     "watchy": "^0.6.2"

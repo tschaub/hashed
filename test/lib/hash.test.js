@@ -11,6 +11,28 @@ lab.experiment('hash', function() {
     done();
   });
 
+  lab.experiment('pluck()', function() {
+
+    lab.test('returns a subset of key/value pairs from a hash', function(done) {
+      var loc = {
+        hash: '#/foo/bar/num/42/bam/chicken'
+      };
+
+      expect(hash.pluck(loc, ['foo', 'bam'])).to.equal('#/foo/bar/bam/chicken');
+      done();
+    });
+
+    lab.test('silently disregards missing values', function(done) {
+      var loc = {
+        hash: '#/foo/bar/num/42'
+      };
+
+      expect(hash.pluck(loc, ['foo', 'bam'])).to.equal('#/foo/bar');
+      done();
+    });
+
+  });
+
   lab.experiment('updateHash()', function() {
 
     lab.test('serializes values for the hash', function(done) {

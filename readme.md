@@ -85,16 +85,16 @@ The `register` function takes two arguments:
 
  * **config** - `Object` Definition for the state "schema" (default values and types for each field).  The `config` object takes two forms, depending on whether or not you want the default serializers and deserializers.
 
-   Without custom serializers or deserializers, the config is an objects with property values representing the default state.  For example, if your state is represented by a "start" date of Jan 1, 2000 and a "count" value of 42, your `config` would look like this:
+  Without custom serializers or deserializers, the config is an objects with property values representing the default state.  For example, if your state is represented by a "start" date of Jan 1, 2000 and a "count" value of 42, your `config` would look like this:
 
-   ```js
-   var config = {
-     start: new Date(Date.UTC(2000, 0, 1)),
-     count: 42
-   };
-   ```
+  ```js
+  var config = {
+    start: new Date(Date.UTC(2000, 0, 1)),
+    count: 42
+  };
+  ```
 
-   If you don't want to use the build-in functions for serializing and deserializing values, use an object with `init`, `serialize`, and `deserialize` properties.  The `init` value represents the default value (if none is present in the URL).  The `serialize` function is called with your state value and returns a string for the URL.  The `deserialize` function is called with a string and returns the value for your state.
+  If you don't want to use the build-in functions for serializing and deserializing values, use an object with `init`, `serialize`, and `deserialize` properties.  The `init` value represents the default value (if none is present in the URL).  The `serialize` function is called with your state value and returns a string for the URL.  The `deserialize` function is called with a string and returns the value for your state.
 
  * **listener** - `function(Object)` A function that is called when the URL hash is updated.  The object properties represent new state values.  The object will not include property values that have not changed.
 

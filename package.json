@@ -31,7 +31,7 @@
     "browserify": "~13.0.0",
     "code": "^2.0.1",
     "eslint": "^1.1.0",
-    "eslint-config-tschaub": "^2.0.0",
+    "eslint-config-tschaub": "^3.0.0",
     "in-publish": "^2.0.0",
     "lab": "^8.0.0",
     "uglify-js": "^2.4.24",

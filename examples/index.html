@@ -24,11 +24,11 @@
         <fieldset>
           <div class="pure-control-group">
             <label for="quantity">quantity</label>
-            <input type="range" id="quantity">
+            <input type="range" name="quantity">
           </div>
           <div class="pure-control-group">
             <label for="item">item</label>
-            <select id="item">
+            <select name="item">
               <option>chickens</option>
               <option>beans</option>
               <option>bananas</option>
@@ -55,7 +55,9 @@
 
           for (var name in config) {
             elements.namedItem(name).addEventListener('change', function(evt) {
-              update(evt.target.id, evt.target.value);
+              var state = {};
+              state[evt.target.getAttribute('name')] = evt.target.value;
+              update(state);
             });
           }
 
@@ -69,11 +71,11 @@
         <fieldset>
           <div class="pure-control-group">
             <label for="date">date</label>
-            <input type="date" id="date">
+            <input type="date" name="date">
           </div>
           <div class="pure-control-group">
             <label for="color">color</label>
-            <input id="color" type="color">
+            <input name="color" type="color">
           </div>
         </fieldset>
       </form>
@@ -96,7 +98,9 @@
 
           for (var name in config) {
             elements.namedItem(name).addEventListener('change', function(evt) {
-              update(evt.target.id, evt.target.value);
+              var state = {};
+              state[evt.target.getAttribute('name')] = evt.target.value;
+              update(state);
             });
           }
 
@@ -138,7 +142,9 @@
           for (var name in config) {
             if (name !== '_') {
               elements.namedItem(name).addEventListener('change', function(evt) {
-                update(evt.target.name, evt.target.value);
+                var state = {};
+                state[evt.target.getAttribute('name')] = evt.target.value;
+                update(state);
               });
             }
           }

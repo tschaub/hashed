@@ -22,7 +22,7 @@ lab.experiment('hash', function() {
       var values = {};
       var loc = {};
       hash.set(values, loc);
-      expect(loc.hash).to.be.undefined();
+      expect(loc.hash).to.equal('');
       done();
     });
 
@@ -50,6 +50,16 @@ lab.experiment('hash', function() {
 
       var values = hash.get(loc);
       expect(Object.keys(values)).to.have.length(0);
+      done();
+    });
+
+  });
+
+  lab.experiment('serialize()', function() {
+
+    lab.test('returns a string for the hash', function(done) {
+      var str = hash.serialize({foo: 'bar'});
+      expect(str).to.equal('#/foo/bar');
       done();
     });
 

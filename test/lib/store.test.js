@@ -257,4 +257,37 @@ lab.experiment('store', function() {
 
   });
 
+  lab.experiment('#serialize()', function() {
+
+    lab.test('it uses default serializers', function(done) {
+      var store = new Store({}, function() {});
+
+      var serialized = store.serialize({foo: 'bar', num: 42});
+      expect(serialized).to.deep.equal({foo: 'bar', num: '42'});
+      done();
+    });
+
+    lab.test('it uses serializer from registered provider if available', function(done) {
+      var store = new Store({}, function() {});
+
+      store.register({
+        foo: {
+          default: 'bar',
+          serialize: function(value) {
+            return value.split('').reverse().join('');
+          },
+          deserialize: function(str) {
+            return str.split('').reverse().join('');
+          }
+        },
+        bam: 'baz'
+      }, function() {});
+
+      var serialized = store.serialize({foo: 'bar', num: 42});
+      expect(serialized).to.deep.equal({foo: 'rab', num: '42'});
+      done();
+    });
+
+  });
+
 });

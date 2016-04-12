@@ -52,7 +52,7 @@ The default serializers and deserializers work for primitive state values (strin
 // you don't want JSON serialization in the URL.
 var config = {
   colors: {
-    init: [] // no colors by default
+    default: [] // no colors by default
     serialize: function(colors) {
       // Instead of JSON, you want comma delimited values.
       // Note that if you expect strings that should be encoded,
@@ -94,7 +94,7 @@ The `register` function takes two arguments:
   };
   ```
 
-  If you don't want to use the build-in functions for serializing and deserializing values, use an object with `init`, `serialize`, and `deserialize` properties.  The `init` value represents the default value (if none is present in the URL).  The `serialize` function is called with your state value and returns a string for the URL.  The `deserialize` function is called with a string and returns the value for your state.
+  If you don't want to use the build-in functions for serializing and deserializing values, use an object with `default`, `serialize`, and `deserialize` properties.  The `default` value represents the default value (if none is present in the URL).  The `serialize` function is called with your state value and returns a string for the URL.  The `deserialize` function is called with a string and returns the value for your state.
 
  * **listener** - `function(Object)` A function that is called when the URL hash is updated.  The object properties represent new state values.  The object will not include property values that have not changed.
 

@@ -39,7 +39,7 @@ lab.experiment('schema', function() {
         var calls = [];
         var schema = new Schema({
           custom: {
-            init: 10,
+            default: 10,
             serialize: function(value, s) {
               calls.push([value, s]);
               return String(value);
@@ -113,20 +113,8 @@ lab.experiment('schema', function() {
         done();
       });
 
-      lab.test('gets the default given init value', function(done) {
-        var schema = new Schema({foo: {init: 'bar'}});
-        expect(schema.getDefault('foo')).to.equal('bar');
-        done();
-      });
-
-      lab.test('gets the default given init function', function(done) {
-        var schema = new Schema({
-          foo: {
-            init: function() {
-              return 'bar';
-            }
-          }
-        });
+      lab.test('gets the default value given an object with default', function(done) {
+        var schema = new Schema({foo: {default: 'bar'}});
         expect(schema.getDefault('foo')).to.equal('bar');
         done();
       });

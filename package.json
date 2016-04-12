@@ -1,6 +1,6 @@
 {
   "name": "hashed",
-  "version": "1.2.0",
+  "version": "2.0.0-beta.1",
   "description": "Serialize state from multiple providers using location.hash",
   "homepage": "https://github.com/tschaub/hashed",
   "author": {
@@ -24,6 +24,7 @@
     "start": "watchy --watch package.json,lib,test -- npm test",
     "pretest": "eslint lib test",
     "test": "lab -t 100 test",
+    "test-debug": "node-debug lab --ignore window,document,regeneratorRuntime,jQuery,_babelPolyfill,core,Reflect",
     "prepublish": "in-publish && make || in-install"
   },
   "main": "lib/index.js",

@@ -46,18 +46,18 @@
             item: 'beans'
           };
 
-          var update = hashed.register(config, function(state) {
-            // called whenever the state changes
-            for (var name in state) {
-              elements.namedItem(name).value = state[name];
+          var update = hashed.register(config, function(values) {
+            // called with initial values
+            for (var name in values) {
+              elements.namedItem(name).value = values[name];
             }
           });
 
           for (var name in config) {
             elements.namedItem(name).addEventListener('change', function(evt) {
-              var state = {};
-              state[evt.target.getAttribute('name')] = evt.target.value;
-              update(state);
+              var values = {};
+              values[evt.target.getAttribute('name')] = evt.target.value;
+              update(values);
             });
           }
 
@@ -89,18 +89,18 @@
             color: '#bada55'
           };
 
-          var update = hashed.register(config, function(state) {
-            // called whenever the state changes
-            for (var name in state) {
-              elements.namedItem(name).value = state[name];
+          var update = hashed.register(config, function(values) {
+            // called with initial values
+            for (var name in values) {
+              elements.namedItem(name).value = values[name];
             }
           });
 
           for (var name in config) {
             elements.namedItem(name).addEventListener('change', function(evt) {
-              var state = {};
-              state[evt.target.getAttribute('name')] = evt.target.value;
-              update(state);
+              var values = {};
+              values[evt.target.getAttribute('name')] = evt.target.value;
+              update(values);
             });
           }
 
@@ -132,19 +132,19 @@
             _: 'view-3'
           };
 
-          var update = hashed.register(config, function(state) {
-            // called whenever the state changes
-            for (var name in state) {
-              elements.namedItem(name).value = state[name];
+          var update = hashed.register(config, function(values) {
+            // called with initial values
+            for (var name in values) {
+              elements.namedItem(name).value = values[name];
             }
           });
 
           for (var name in config) {
             if (name !== '_') {
               elements.namedItem(name).addEventListener('change', function(evt) {
-                var state = {};
-                state[evt.target.getAttribute('name')] = evt.target.value;
-                update(state);
+                var values = {};
+                values[evt.target.getAttribute('name')] = evt.target.value;
+                update(values);
               });
             }
           }

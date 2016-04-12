@@ -101,6 +101,42 @@ lab.experiment('store', function() {
         }, 5);
       });
 
+      lab.test('calls callback with all values when one is updated', function(done) {
+        var calls = [];
+        var store = new Store({foo: 'bar', num: '41'}, function(values) {
+          calls.push(values);
+        });
+
+        var update = store.register({foo: 'bam', num: 42}, noop);
+
+        update({num: 43});
+        expect(calls).to.have.length(0);
+
+        setTimeout(function() {
+          expect(calls).to.have.length(1);
+          expect(calls[0]).to.deep.equal({foo: 'bar', num: '43'});
+
+          done();
+        }, 5);
+      });
+
+      lab.test('does not call callback if values do not change', function(done) {
+        var calls = [];
+        var store = new Store({foo: 'bar'}, function(values) {
+          calls.push(values);
+        });
+
+        var update = store.register({foo: 'bam'}, noop);
+
+        update({foo: 'bar'});
+        expect(calls).to.have.length(0);
+
+        setTimeout(function() {
+          expect(calls).to.have.length(0);
+          done();
+        }, 5);
+      });
+
       lab.test('debounces callback calls', function(done) {
         var calls = [];
         var store = new Store({}, function(values) {

@@ -11,51 +11,24 @@ lab.experiment('store', function() {
     lab.experiment('constructor', function() {
 
       lab.test('creates a new instance', function(done) {
-        var store = new Store(noop);
+        var store = new Store({}, noop);
         expect(store).to.be.an.instanceof(Store);
         done();
       });
 
-    });
-
-    lab.experiment('#unregister()', function() {
-
-      lab.test('allows a provider to be removed', function(done) {
-        var store = new Store(noop);
-
+      lab.test('accepts initial values', function(done) {
         var calls = [];
-        var callback = function(changes) {
-          calls.push(changes);
-        };
-        store.register({foo: 'bar'}, callback);
-
-        store.unregister(callback);
-        store.update({foo: 'bam'});
-
+        var store = new Store({foo: 'bar', num: '42'}, function(values) {
+          calls.push(values);
+        });
+        var update = store.register({num: 43}, noop);
+        update({num: 44});
+        expect(calls).to.have.length(0);
         setTimeout(function() {
-          expect(calls).to.have.length(0);
+          expect(calls).to.have.length(1);
+          expect(calls[0]).to.deep.equal({foo: 'bar', num: '44'});
           done();
-        }, 0);
-      });
-
-      lab.test('causes unregistered provider update to throw', function(done) {
-        var store = new Store(noop);
-
-        var calls = [];
-        var callback = function(changes) {
-          calls.push(changes);
-        };
-        var update = store.register({foo: 'bar'}, callback);
-
-        store.unregister(callback);
-
-        var call = function() {
-          update({foo: 'bam'});
-        };
-        expect(call).to.throw(
-            'Unregistered provider attempting to update state');
-        done();
-
+        }, 5);
       });
 
     });
@@ -63,13 +36,46 @@ lab.experiment('store', function() {
     lab.experiment('#register()', function() {
 
       lab.test('registers a new provider', function(done) {
-        var store = new Store(noop);
+        var store = new Store({}, noop);
         store.register({foo: 'bar'}, noop);
         done();
       });
 
+      lab.test('initializes provider synchronously with defaults', function(done) {
+        var store = new Store({}, noop);
+        var called = false;
+        store.register({foo: 'bar'}, function(values) {
+          called = true;
+          expect(values).to.deep.equal({foo: 'bar'});
+        });
+        expect(called).to.equal(true);
+        done();
+      });
+
+      lab.test('initializes provider synchronously with initial values', function(done) {
+        var store = new Store({foo: 'bam'}, noop);
+        var called = false;
+        store.register({foo: 'bar'}, function(values) {
+          called = true;
+          expect(values).to.deep.equal({foo: 'bam'});
+        });
+        expect(called).to.equal(true);
+        done();
+      });
+
+      lab.test('initializes provider with defaults if store values are invalid', function(done) {
+        var store = new Store({num: 'not a number'}, noop);
+        var called = false;
+        store.register({num: 42}, function(values) {
+          called = true;
+          expect(values).to.deep.equal({num: 42});
+        });
+        expect(called).to.equal(true);
+        done();
+      });
+
       lab.test('returns a function used to update state', function(done) {
-        var store = new Store(noop);
+        var store = new Store({}, noop);
         var update = store.register({foo: 'bar'}, noop);
 
         expect(update).to.be.a.function();
@@ -78,14 +84,15 @@ lab.experiment('store', function() {
 
       lab.test('calls callback asynchronously on update', function(done) {
         var calls = [];
-        var store = new Store(function(values) {
+        var store = new Store({}, function(values) {
           calls.push(values);
         });
 
         var update = store.register({foo: 'bar'}, noop);
 
-        // accepts state object
         update({foo: 'bam'});
+        expect(calls).to.have.length(0);
+
         setTimeout(function() {
           expect(calls).to.have.length(1);
           expect(calls[0]).to.deep.equal({foo: 'bam'});
@@ -96,14 +103,17 @@ lab.experiment('store', function() {
 
       lab.test('debounces callback calls', function(done) {
         var calls = [];
-        var store = new Store(function(values) {
+        var store = new Store({}, function(values) {
           calls.push(values);
         });
 
         var update = store.register({foo: 'bar'}, noop);
 
         update({foo: 'bam'});
+        expect(calls).to.have.length(0);
+
         update({foo: 'baz'});
+        expect(calls).to.have.length(0);
 
         setTimeout(function() {
           expect(calls).to.have.length(1);
@@ -113,7 +123,7 @@ lab.experiment('store', function() {
       });
 
       lab.test('throws when registering with a conflicting key', function(done) {
-        var store = new Store(noop);
+        var store = new Store({}, noop);
         store.register({foo: 'bar'}, noop);
 
         var call = function() {
@@ -124,214 +134,87 @@ lab.experiment('store', function() {
         done();
       });
 
+      lab.test('throws when registering a duplicate callback', function(done) {
+        var store = new Store({}, noop);
+
+        var callback = function() {};
+        store.register({foo: 'bar'}, callback);
+
+        var call = function() {
+          store.register({num: 42}, callback);
+        };
+        expect(call).to.throw(
+            'Provider already registered with the same callback');
+        done();
+      });
+
     });
 
-    lab.experiment('#update()', function() {
+    lab.experiment('#unregister()', function() {
 
-      lab.test('notifies providers of updated values', function(done) {
-        var store = new Store(noop);
+      lab.test('allows a provider to be removed', function(done) {
+        var store = new Store({}, noop);
 
-        var p1Calls = [];
-        store.register({foo: 'foo.0', bar: 'bar.0'}, function(changes) {
-          p1Calls.push(changes);
-        });
-
-        var p2Calls = [];
-        store.register({bar: 'bar.1', _: 'pre'}, function(changes) {
-          p2Calls.push(changes);
-        });
-
-        store.update({foo: 'foo.0a', bar: 'bar.0a', 'pre.bar': 'bar.1a'});
-        expect(p1Calls).to.have.length(0);
-        expect(p2Calls).to.have.length(0);
-
-        setTimeout(function() {
-          expect(p1Calls).to.have.length(1);
-          expect(p1Calls[0]).to.deep.equal({foo: 'foo.0a', bar: 'bar.0a'});
-
-          expect(p2Calls).to.have.length(1);
-          expect(p2Calls[0]).to.deep.equal({bar: 'bar.1a'});
-          done();
-        }, 0);
-
+        var callback = function() {};
+        store.register({foo: 'bar'}, callback);
+        store.unregister(callback);
+        done();
       });
 
-      lab.test('uses defaults if string cannot be deserialized', function(done) {
-        var store = new Store(noop);
-
-        var p1Calls = [];
-        store.register({number: 42}, function(changes) {
-          p1Calls.push(changes);
-        });
-
-        store.update({number: 'bogus'});
-        expect(p1Calls).to.have.length(0);
-
-        setTimeout(function() {
-          expect(p1Calls).to.have.length(1);
-          expect(p1Calls[0]).to.deep.equal({number: 42});
-          done();
-        }, 0);
-
-      });
-
-      lab.test('uses defaults if not enough values provided', function(done) {
-        var store = new Store(noop);
-
-        var p1Calls = [];
-        store.register({number: 42}, function(changes) {
-          p1Calls.push(changes);
-        });
-
-        store.update({});
-        expect(p1Calls).to.have.length(0);
-
-        setTimeout(function() {
-          expect(p1Calls).to.have.length(1);
-          expect(p1Calls[0]).to.deep.equal({number: 42});
-          done();
-        }, 0);
-
-      });
-
-      lab.test('notifies providers once on multiple calls', function(done) {
-        var store = new Store(noop);
-
+      lab.test('removes values associated with the provider', function(done) {
         var calls = [];
-        store.register({foo: 'foo.0', bar: 'bar.0'}, function(changes) {
-          calls.push(changes);
+        var store = new Store({}, function(values) {
+          calls.push(values);
         });
 
-        store.update({foo: 'foo.1', bar: 'bar.1'});
-        store.update({foo: 'foo.2', bar: 'bar.2'});
+        var firstCallback = function() {};
+        var firstUpdate = store.register({foo: 'bar'}, firstCallback);
+
+        var secondCallback = function() {};
+        var secondUpdate = store.register({num: 42}, secondCallback);
+
         expect(calls).to.have.length(0);
+
+        firstUpdate({foo: 'bam'});
+        secondUpdate({num: 43});
+
+        store.unregister(firstCallback);
 
         setTimeout(function() {
           expect(calls).to.have.length(1);
-          expect(calls[0]).to.deep.equal({foo: 'foo.2', bar: 'bar.2'});
+          expect(calls[0]).to.deep.equal({num: '43'});
           done();
-        }, 0);
-
+        }, 5);
       });
 
-      lab.test('notifies providers with updated values', function(done) {
-        var store = new Store(noop);
+      lab.test('causes unregistered provider update to throw', function(done) {
+        var store = new Store({}, noop);
 
-        var calls = [];
-        var update = store.register(
-            {foo: 'foo.0', bar: 'bar.0'},
-            function(changes) {
-              calls.push(changes);
-            });
+        var callback = function() {};
+        var update = store.register({foo: 'bar'}, callback);
 
-        update({foo: 'foo.1', bar: 'bar.1'});
-        store.update({foo: 'foo.2', bar: 'bar.2'});
-        expect(calls).to.have.length(0);
+        store.unregister(callback);
 
-        setTimeout(function() {
-          expect(calls).to.have.length(1);
-          expect(calls[0]).to.deep.equal({foo: 'foo.2', bar: 'bar.2'});
-          done();
-        }, 0);
-
+        var call = function() {
+          update({foo: 'bam'});
+        };
+        expect(call).to.throw('Unregistered provider attempting to update state');
+        done();
       });
 
-      lab.test('notification does not include unchanged values', function(done) {
-        var store = new Store(noop);
+      lab.test('throws if called twice for the same provider', function(done) {
+        var store = new Store({}, noop);
 
-        var calls = [];
-        var update = store.register(
-            {foo: 'foo.0', bar: 'bar.0'},
-            function(changes) {
-              calls.push(changes);
-            });
+        var callback = function() {};
+        store.register({foo: 'bar'}, callback);
 
-        update({foo: 'foo.1', bar: 'bar.1'});
-        store.update({foo: 'foo.2', bar: 'bar.1'});
-        expect(calls).to.have.length(0);
+        store.unregister(callback);
 
-        setTimeout(function() {
-          expect(calls).to.have.length(1);
-          expect(calls[0]).to.deep.equal({foo: 'foo.2'});
-          done();
-        }, 0);
-
-      });
-
-      lab.test('no notification if no values changed', function(done) {
-        var store = new Store(noop);
-
-        var calls = [];
-        var update = store.register(
-            {foo: 'foo.0', bar: 'bar.0'},
-            function(changes) {
-              calls.push(changes);
-            });
-
-        update({foo: 'foo.1', bar: 'bar.1'});
-        store.update({foo: 'foo.1', bar: 'bar.1'});
-        expect(calls).to.have.length(0);
-
-        setTimeout(function() {
-          expect(calls).to.have.length(0);
-          done();
-        }, 0);
-
-      });
-
-      lab.test('deserializes before notifying providers', function(done) {
-        var store = new Store(noop);
-
-        var p1Calls = [];
-        store.register({number: 10}, function(changes) {
-          p1Calls.push(changes);
-        });
-
-        var p2Calls = [];
-        store.register({date: new Date(1)}, function(changes) {
-          p2Calls.push(changes);
-        });
-
-        store.update({number: '42', date: new Date(2).toISOString()});
-
-        setTimeout(function() {
-          expect(p1Calls).to.have.length(1);
-          expect(p1Calls[0]).to.deep.equal({number: 42});
-
-          expect(p2Calls).to.have.length(1);
-          expect(p2Calls[0]).to.deep.equal({date: new Date(2)});
-          done();
-        }, 0);
-
-      });
-
-      lab.test('calls providers with existing values', function(done) {
-        var store = new Store(noop);
-
-        store.update({number: '42', date: new Date(2).toISOString()});
-
-        var p1Calls = [];
-        store.register({number: 10}, function(changes) {
-          p1Calls.push(changes);
-        });
-
-        var p2Calls = [];
-        store.register({date: new Date(1)}, function(changes) {
-          p2Calls.push(changes);
-        });
-
-        expect(p1Calls).to.have.length(0);
-        expect(p2Calls).to.have.length(0);
-
-        setTimeout(function() {
-          expect(p1Calls).to.have.length(1);
-          expect(p1Calls[0]).to.deep.equal({number: 42});
-
-          expect(p2Calls).to.have.length(1);
-          expect(p2Calls[0]).to.deep.equal({date: new Date(2)});
-          done();
-        }, 0);
-
+        var call = function() {
+          store.unregister(callback);
+        };
+        expect(call).to.throw('Unable to unregister hashed state provider');
+        done();
       });
 
     });

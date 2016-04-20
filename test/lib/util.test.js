@@ -62,6 +62,35 @@ lab.experiment('util', function() {
 
   });
 
+  lab.experiment('extend()', function() {
+    var extend = util.extend;
+
+    lab.test('copies properties from source to dest', function(done) {
+      var source = {foo: 'bar'};
+      var dest = {};
+      extend(dest, source);
+      expect(dest.foo).to.equal('bar');
+      done();
+    });
+
+    lab.test('overwrites existing dest properties', function(done) {
+      var source = {foo: 'bar'};
+      var dest = {foo: 'bam'};
+      extend(dest, source);
+      expect(dest.foo).to.equal('bar');
+      done();
+    });
+
+    lab.test('returns dest object', function(done) {
+      var source = {foo: 'bar'};
+      var dest = {foo: 'bam'};
+      var got = extend(dest, source);
+      expect(got).to.equal(dest);
+      done();
+    });
+
+  });
+
   lab.experiment('zip()', function() {
 
     lab.test('creates an array from an object', function(done) {

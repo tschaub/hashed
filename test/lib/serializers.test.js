@@ -109,7 +109,7 @@ lab.experiment('serializers', function() {
       var serialize = get('object');
       var obj = {foo: 'bar'};
       var json = dec(serialize(obj));
-      expect(obj).to.deep.equal(JSON.parse(json));
+      expect(obj).to.equal(JSON.parse(json));
       done();
     });
 

@@ -36,7 +36,7 @@ lab.experiment('hash', function() {
       };
 
       var values = hash.get(loc);
-      expect(values).to.deep.equal({
+      expect(values).to.equal({
         foo: 'bar',
         num: '42'
       });

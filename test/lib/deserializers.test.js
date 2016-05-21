@@ -142,7 +142,7 @@ lab.experiment('deserializers', function() {
 
     lab.test('returns an appropriate serializer for array', function(done) {
       var deserialize = get('array');
-      expect(deserialize('["bar", 100]')).to.deep.equal(['bar', 100]);
+      expect(deserialize('["bar", 100]')).to.equal(['bar', 100]);
       done();
     });
 
@@ -177,7 +177,7 @@ lab.experiment('deserializers', function() {
       var deserialize = get('object');
       var json = '{"foo": "bar"}';
       var obj = deserialize(json);
-      expect(obj).to.deep.equal({foo: 'bar'});
+      expect(obj).to.equal({foo: 'bar'});
       done();
     });
 

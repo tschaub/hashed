@@ -96,7 +96,7 @@ lab.experiment('util', function() {
     lab.test('creates an array from an object', function(done) {
       var obj = {foo: 'bar', num: 42};
       var arr = util.zip(obj);
-      expect(arr).to.deep.equal(['foo', 'bar', 'num', 42]);
+      expect(arr).to.equal(['foo', 'bar', 'num', 42]);
       done();
     });
 
@@ -107,7 +107,7 @@ lab.experiment('util', function() {
     lab.test('creates an object from an array', function(done) {
       var arr = ['foo', 'bar', 'num', 42];
       var obj = util.unzip(arr);
-      expect(obj).to.deep.equal({foo: 'bar', num: 42});
+      expect(obj).to.equal({foo: 'bar', num: 42});
       done();
     });
 

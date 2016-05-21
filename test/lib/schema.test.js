@@ -25,7 +25,7 @@ lab.experiment('schema', function() {
         var schema = new Schema({aNumber: 10, anArray: ['one', 'two']});
         expect(schema.serialize('aNumber', 42)).to.equal('42');
         var json = dec(schema.serialize('anArray', [2, 3]));
-        expect(JSON.parse(json)).to.deep.equal([2, 3]);
+        expect(JSON.parse(json)).to.equal([2, 3]);
         done();
       });
 
@@ -81,7 +81,7 @@ lab.experiment('schema', function() {
         var schema = new Schema({aNumber: 10, anArray: ['one', 'two']});
         expect(schema.deserialize('aNumber', '42')).to.equal(42);
         var json = '[2, 3]';
-        expect(schema.deserialize('anArray', json)).to.deep.equal([2, 3]);
+        expect(schema.deserialize('anArray', json)).to.equal([2, 3]);
         done();
       });
 

@@ -26,7 +26,7 @@ lab.experiment('store', function() {
         expect(calls).to.have.length(0);
         setTimeout(function() {
           expect(calls).to.have.length(1);
-          expect(calls[0]).to.deep.equal({foo: 'bar', num: '44'});
+          expect(calls[0]).to.equal({foo: 'bar', num: '44'});
           done();
         }, 5);
       });
@@ -46,7 +46,7 @@ lab.experiment('store', function() {
         var called = false;
         store.register({foo: 'bar'}, function(values) {
           called = true;
-          expect(values).to.deep.equal({foo: 'bar'});
+          expect(values).to.equal({foo: 'bar'});
         });
         expect(called).to.equal(true);
         done();
@@ -57,7 +57,7 @@ lab.experiment('store', function() {
         var called = false;
         store.register({foo: 'bar'}, function(values) {
           called = true;
-          expect(values).to.deep.equal({foo: 'bam'});
+          expect(values).to.equal({foo: 'bam'});
         });
         expect(called).to.equal(true);
         done();
@@ -68,7 +68,7 @@ lab.experiment('store', function() {
         var called = false;
         store.register({num: 42}, function(values) {
           called = true;
-          expect(values).to.deep.equal({num: 42});
+          expect(values).to.equal({num: 42});
         });
         expect(called).to.equal(true);
         done();
@@ -95,7 +95,7 @@ lab.experiment('store', function() {
 
         setTimeout(function() {
           expect(calls).to.have.length(1);
-          expect(calls[0]).to.deep.equal({foo: 'bam'});
+          expect(calls[0]).to.equal({foo: 'bam'});
 
           done();
         }, 5);
@@ -114,7 +114,7 @@ lab.experiment('store', function() {
 
         setTimeout(function() {
           expect(calls).to.have.length(1);
-          expect(calls[0]).to.deep.equal({foo: 'bar', num: '43'});
+          expect(calls[0]).to.equal({foo: 'bar', num: '43'});
 
           done();
         }, 5);
@@ -153,7 +153,7 @@ lab.experiment('store', function() {
 
         setTimeout(function() {
           expect(calls).to.have.length(1);
-          expect(calls[0]).to.deep.equal({foo: 'baz'});
+          expect(calls[0]).to.equal({foo: 'baz'});
           done();
         }, 5);
       });
@@ -218,7 +218,7 @@ lab.experiment('store', function() {
 
         setTimeout(function() {
           expect(calls).to.have.length(1);
-          expect(calls[0]).to.deep.equal({num: '43'});
+          expect(calls[0]).to.equal({num: '43'});
           done();
         }, 5);
       });
@@ -263,7 +263,7 @@ lab.experiment('store', function() {
       var store = new Store({}, function() {});
 
       var serialized = store.serialize({foo: 'bar', num: 42});
-      expect(serialized).to.deep.equal({foo: 'bar', num: '42'});
+      expect(serialized).to.equal({foo: 'bar', num: '42'});
       done();
     });
 
@@ -284,7 +284,7 @@ lab.experiment('store', function() {
       }, function() {});
 
       var serialized = store.serialize({foo: 'bar', num: 42});
-      expect(serialized).to.deep.equal({foo: 'rab', num: '42'});
+      expect(serialized).to.equal({foo: 'rab', num: '42'});
       done();
     });
 

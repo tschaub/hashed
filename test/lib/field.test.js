@@ -102,7 +102,7 @@ lab.experiment('field', function() {
         var field = new Field({default: [42, 'foo']});
         var array = ['foo', 42];
         var json = dec(field.serialize(array));
-        expect(JSON.parse(json)).to.deep.equal(array);
+        expect(JSON.parse(json)).to.equal(array);
         done();
       });
 
@@ -110,7 +110,7 @@ lab.experiment('field', function() {
         var field = new Field({default: {foo: 'bar'}});
         var obj = {baz: 'bam'};
         var json = dec(field.serialize(obj));
-        expect(JSON.parse(json)).to.deep.equal(obj);
+        expect(JSON.parse(json)).to.equal(obj);
         done();
       });
 
@@ -154,7 +154,7 @@ lab.experiment('field', function() {
         expect(field).to.be.an.instanceof(Field);
         var array = ['foo', 42];
         var json = JSON.stringify(array);
-        expect(field.deserialize(json)).to.deep.equal(array);
+        expect(field.deserialize(json)).to.equal(array);
         done();
       });
 
@@ -163,7 +163,7 @@ lab.experiment('field', function() {
         expect(field).to.be.an.instanceof(Field);
         var obj = {baz: 'bam'};
         var json = JSON.stringify(obj);
-        expect(field.deserialize(json)).to.deep.equal(obj);
+        expect(field.deserialize(json)).to.equal(obj);
         done();
       });
 

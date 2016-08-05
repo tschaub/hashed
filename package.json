@@ -29,7 +29,7 @@
   },
   "main": "lib/index.js",
   "devDependencies": {
-    "browserify": "~13.0.0",
+    "browserify": "~13.1.0",
     "code": "^3.0.0",
     "eslint": "3.2.2",
     "eslint-config-tschaub": "5.0.0",

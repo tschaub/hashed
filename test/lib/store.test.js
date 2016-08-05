@@ -18,15 +18,18 @@ lab.experiment('store', function() {
 
       lab.test('accepts initial values', function(done) {
         var calls = [];
-        var store = new Store({foo: 'bar', num: '42'}, function(values) {
-          calls.push(values);
+        var store = new Store({foo: 'bar', num: '42'}, function(values, defaults) {
+          calls.push({values: values, defaults: defaults});
         });
         var update = store.register({num: 43}, noop);
         update({num: 44});
         expect(calls).to.have.length(0);
         setTimeout(function() {
           expect(calls).to.have.length(1);
-          expect(calls[0]).to.equal({foo: 'bar', num: '44'});
+          expect(calls[0]).to.equal({
+            values: {foo: 'bar', num: '44'},
+            defaults: {num: '43'}
+          });
           done();
         }, 5);
       });
@@ -84,8 +87,8 @@ lab.experiment('store', function() {
 
       lab.test('calls callback asynchronously on update', function(done) {
         var calls = [];
-        var store = new Store({}, function(values) {
-          calls.push(values);
+        var store = new Store({}, function(values, defaults) {
+          calls.push({values: values, defaults: defaults});
         });
 
         var update = store.register({foo: 'bar'}, noop);
@@ -95,7 +98,10 @@ lab.experiment('store', function() {
 
         setTimeout(function() {
           expect(calls).to.have.length(1);
-          expect(calls[0]).to.equal({foo: 'bam'});
+          expect(calls[0]).to.equal({
+            values: {foo: 'bam'},
+            defaults: {foo: 'bar'}
+          });
 
           done();
         }, 5);
@@ -103,8 +109,8 @@ lab.experiment('store', function() {
 
       lab.test('calls callback with all values when one is updated', function(done) {
         var calls = [];
-        var store = new Store({foo: 'bar', num: '41'}, function(values) {
-          calls.push(values);
+        var store = new Store({foo: 'bar', num: '41'}, function(values, defaults) {
+          calls.push({values: values, defaults: defaults});
         });
 
         var update = store.register({foo: 'bam', num: 42}, noop);
@@ -114,7 +120,10 @@ lab.experiment('store', function() {
 
         setTimeout(function() {
           expect(calls).to.have.length(1);
-          expect(calls[0]).to.equal({foo: 'bar', num: '43'});
+          expect(calls[0]).to.equal({
+            values: {foo: 'bar', num: '43'},
+            defaults: {foo: 'bam', num: '42'}
+          });
 
           done();
         }, 5);

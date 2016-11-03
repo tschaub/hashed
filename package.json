@@ -32,7 +32,7 @@
     "browserify": "~13.1.0",
     "code": "^3.0.0",
     "eslint": "3.9.1",
-    "eslint-config-tschaub": "5.0.0",
+    "eslint-config-tschaub": "6.0.0",
     "in-publish": "^2.0.0",
     "lab": "^11.1.0",
     "uglify-js": "^2.4.24",

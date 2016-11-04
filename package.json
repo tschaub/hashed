@@ -21,9 +21,10 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "watchy --watch package.json,lib,test -- npm test",
+    "start": "watchy --watch package.json,lib,test -- npm run build",
     "pretest": "eslint lib test",
     "test": "lab -t 100 test",
+    "build": "npm test && make",
     "test-debug": "node-debug lab --ignore window,document,regeneratorRuntime,jQuery,_babelPolyfill,core,Reflect",
     "prepublish": "in-publish && make || in-install"
   },

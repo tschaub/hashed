@@ -36,6 +36,114 @@ lab.experiment('store', function() {
 
     });
 
+    lab.experiment('#update()', function() {
+
+      lab.test('updates store values and calls provider callbacks', function(done) {
+        var store = new Store({}, noop);
+        var log = [];
+        store.register({foo: 'bar'}, function(values) {
+          log.push(values);
+        });
+        expect(log).to.equal([{foo: 'bar'}]);
+        log.length = 0;
+
+        store.update({foo: 'bam'});
+        setTimeout(function() {
+          expect(log).to.equal([{foo: 'bam'}]);
+          done();
+        }, 5);
+      });
+
+      lab.test('calls callback once for multiple synchronous updates', function(done) {
+        var store = new Store({}, noop);
+        var log = [];
+        store.register({foo: 'bar', num: 42}, function(values) {
+          log.push(values);
+        });
+        expect(log).to.equal([{foo: 'bar', num: 42}]);
+        log.length = 0;
+
+        store.update({foo: 'bam', num: '21'});
+        store.update({foo: 'baz', num: '63'});
+
+        setTimeout(function() {
+          expect(log).to.equal([{foo: 'baz', num: 63}]);
+          done();
+        }, 5);
+      });
+
+      lab.test('calls callback with defaults when updated values are absent', function(done) {
+        var store = new Store({foo: 'non-default', bar: 42}, noop);
+        var log = [];
+        store.register({foo: 'bar', num: 42}, function(values) {
+          log.push(values);
+        });
+        expect(log).to.equal([{foo: 'non-default', num: 42}]);
+        log.length = 0;
+
+        store.update({num: '63'});
+
+        setTimeout(function() {
+          expect(log).to.equal([{foo: 'bar', num: 63}]);
+          done();
+        }, 5);
+      });
+
+      lab.test('last update wins', function(done) {
+        var store = new Store({}, noop);
+        var log = [];
+        store.register({foo: 'bar', num: 42}, function(values) {
+          log.push(values);
+        });
+        expect(log).to.equal([{foo: 'bar', num: 42}]);
+        log.length = 0;
+
+        store.update({num: '63'});
+        store.update({foo: 'bam'});
+
+        setTimeout(function() {
+          expect(log).to.equal([{foo: 'bam'}]);
+          done();
+        }, 5);
+      });
+
+      lab.test('does not call callback if values do not change', function(done) {
+        var store = new Store({}, noop);
+        var log = [];
+        store.register({foo: 'bar', num: 42}, function(values) {
+          log.push(values);
+        });
+        expect(log).to.equal([{foo: 'bar', num: 42}]);
+        log.length = 0;
+
+        store.update({num: '42'});
+        store.update({foo: 'bar'});
+
+        setTimeout(function() {
+          expect(log).to.have.length(0);
+          done();
+        }, 5);
+      });
+
+      lab.test('does not call callback for garbage updates', function(done) {
+        var store = new Store({}, noop);
+        var log = [];
+        store.register({foo: 'bar', num: 42}, function(values) {
+          log.push(values);
+        });
+        expect(log).to.equal([{foo: 'bar', num: 42}]);
+        log.length = 0;
+
+        store.update({num: 'garbage'});
+
+        setTimeout(function() {
+          expect(log).to.have.length(0);
+          done();
+        }, 5);
+      });
+
+    });
+
     lab.experiment('#register()', function() {
 
       lab.test('registers a new provider', function(done) {

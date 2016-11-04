@@ -10,7 +10,7 @@ If you use a module bundler like [Browserify](http://browserify.org/), you can i
 
 In your project root:
 
-    npm install hashed --save-dev
+    npm install hashed --save
 
 In one of your application modules:
 

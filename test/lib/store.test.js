@@ -72,6 +72,23 @@ lab.experiment('store', function() {
         }, 5);
       });
 
+      lab.test('calls callback with all values even if only one changed', function(done) {
+        var store = new Store({}, noop);
+        var log = [];
+        store.register({foo: 'bar', num: 42}, function(values) {
+          log.push(values);
+        });
+        expect(log).to.equal([{foo: 'bar', num: 42}]);
+        log.length = 0;
+
+        store.update({num: '63'});
+
+        setTimeout(function() {
+          expect(log).to.equal([{foo: 'bar', num: 63}]);
+          done();
+        }, 5);
+      });
+
       lab.test('calls callback with defaults when updated values are absent', function(done) {
         var store = new Store({foo: 'non-default', bar: 42}, noop);
         var log = [];
@@ -102,7 +119,7 @@ lab.experiment('store', function() {
         store.update({foo: 'bam'});
 
         setTimeout(function() {
-          expect(log).to.equal([{foo: 'bam'}]);
+          expect(log).to.equal([{foo: 'bam', num: 42}]);
           done();
         }, 5);
       });
@@ -138,6 +155,23 @@ lab.experiment('store', function() {
 
         setTimeout(function() {
           expect(log).to.have.length(0);
+          done();
+        }, 5);
+      });
+
+      lab.test('calls callback for if only some of the values are garbage', function(done) {
+        var store = new Store({}, noop);
+        var log = [];
+        store.register({foo: 'bar', num: 42}, function(values) {
+          log.push(values);
+        });
+        expect(log).to.equal([{foo: 'bar', num: 42}]);
+        log.length = 0;
+
+        store.update({num: 'garbage', foo: 'bam'});
+
+        setTimeout(function() {
+          expect(log).to.equal([{foo: 'bam', num: 42}]);
           done();
         }, 5);
       });

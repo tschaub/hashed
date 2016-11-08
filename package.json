@@ -26,7 +26,7 @@
     "test": "lab -t 100 test",
     "build": "npm test && make",
     "test-debug": "node-debug lab --ignore window,document,regeneratorRuntime,jQuery,_babelPolyfill,core,Reflect",
-    "prepublish": "in-publish && make || in-install"
+    "prepublish": "in-publish && make || not-in-publish"
   },
   "main": "lib/index.js",
   "devDependencies": {

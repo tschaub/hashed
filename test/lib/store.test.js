@@ -176,6 +176,52 @@ lab.experiment('store', function() {
         }, 5);
       });
 
+      lab.test('calls most recently registered provider first', function(done) {
+        var store = new Store({}, noop);
+        var log = [];
+        store.register({foo: 'bar'}, function(values) {
+          log.push('first');
+        });
+        store.register({num: 42}, function(values) {
+          log.push('second');
+        });
+        log.length = 0;
+
+        store.update({num: '43', foo: 'bam'});
+
+        setTimeout(function() {
+          expect(log).to.equal(['second', 'first']);
+          done();
+        }, 5);
+      });
+
+      lab.test('works if callbacks unregister providers', function(done) {
+        var store = new Store({}, noop);
+        var log = [];
+
+        var unregister = false;
+        function first() {
+          log.push('first');
+        }
+        function second() {
+          log.push('second');
+          if (unregister) {
+            store.unregister(first);
+          }
+        }
+        store.register({foo: 'bar'}, first);
+        store.register({num: 42}, second);
+        log.length = 0;
+
+        unregister = true;
+        store.update({num: '43', foo: 'bam'});
+
+        setTimeout(function() {
+          expect(log).to.equal(['second']);
+          done();
+        }, 5);
+      });
+
     });
 
     lab.experiment('#register()', function() {

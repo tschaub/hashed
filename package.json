@@ -30,12 +30,12 @@
   },
   "main": "lib/index.js",
   "devDependencies": {
-    "browserify": "~13.1.1",
+    "browserify": "~13.3.0",
     "code": "^4.0.0",
     "eslint": "3.14.0",
     "eslint-config-tschaub": "6.0.0",
     "in-publish": "^2.0.0",
-    "lab": "^11.1.0",
+    "lab": "^12.0.0",
     "uglify-js": "^2.7.4",
     "watchy": "^0.6.6"
   },

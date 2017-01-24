@@ -1,5 +1,7 @@
 # `hashed`
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/tschaub/hashed.svg)](https://greenkeeper.io/)
+
 Serialize your application state in the URL hash.
 
 Hashed lets you register any number of providers and serializes their state in the URL hash.  When your application loads (or if the URL changes by other means), the providers will be notified of the new state.

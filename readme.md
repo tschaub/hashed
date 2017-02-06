@@ -1,7 +1,5 @@
 # `hashed`
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/tschaub/hashed.svg)](https://greenkeeper.io/)
-
 Serialize your application state in the URL hash.
 
 Hashed lets you register any number of providers and serializes their state in the URL hash.  When your application loads (or if the URL changes by other means), the providers will be notified of the new state.
@@ -109,4 +107,4 @@ The `register` function returns a function:
 The `unregister` function is to stop synchronizing state with the URL hash.  It should be called with the same `listener` function passed to the `register` function.
 
 
-[![Current Status](https://secure.travis-ci.org/tschaub/hashed.png?branch=master)](https://travis-ci.org/tschaub/hashed)
+[![Build Status](https://travis-ci.org/tschaub/hashed.svg?branch=master)](https://travis-ci.org/tschaub/hashed)

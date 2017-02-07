@@ -40,9 +40,9 @@ lab.experiment('hash', function() {
       done();
     });
 
-    lab.test('returns an empty string an empty object', function(done) {
+    lab.test('returns # for an empty object', function(done) {
       var str = hash.serialize({});
-      expect(str).to.equal('');
+      expect(str).to.equal('#');
       done();
     });
 

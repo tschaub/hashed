@@ -23,7 +23,6 @@ clean:
 
 # Install Node based dependencies
 node_modules/.time: package.json
-	@npm prune
 	@npm install
 	@touch $@
 

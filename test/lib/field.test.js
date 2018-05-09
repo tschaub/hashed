@@ -1,183 +1,148 @@
-var lab = exports.lab = require('lab').script();
-var expect = require('code').expect;
+const lab = (exports.lab = require('lab').script());
+const expect = require('code').expect;
 
-var Field = require('../../lib/field').Field;
+const Field = require('../../lib/field').Field;
 
-var dec = decodeURIComponent;
+const dec = decodeURIComponent;
 
-lab.experiment('field', function() {
-
-  lab.experiment('Field', function() {
-
-    lab.experiment('constructor', function() {
-
-      lab.test('creates a field from a number', function(done) {
-        var field = new Field(42);
+lab.experiment('field', () => {
+  lab.experiment('Field', () => {
+    lab.experiment('constructor', () => {
+      lab.test('creates a field from a number', () => {
+        const field = new Field(42);
         expect(field).to.be.an.instanceof(Field);
-        done();
       });
 
-      lab.test('creates a field from a string', function(done) {
-        var field = new Field('foo');
+      lab.test('creates a field from a string', () => {
+        const field = new Field('foo');
         expect(field).to.be.an.instanceof(Field);
-        done();
       });
 
-      lab.test('creates a field from a date', function(done) {
-        var field = new Field(new Date());
+      lab.test('creates a field from a date', () => {
+        const field = new Field(new Date());
         expect(field).to.be.an.instanceof(Field);
-        done();
       });
 
-      lab.test('creates a field from an array', function(done) {
-        var field = new Field(['foo', 'bar']);
+      lab.test('creates a field from an array', () => {
+        const field = new Field(['foo', 'bar']);
         expect(field).to.be.an.instanceof(Field);
-        done();
       });
 
-      lab.test('creates a field from an object with default', function(done) {
-        var field = new Field({default: 42});
+      lab.test('creates a field from an object with default', () => {
+        const field = new Field({default: 42});
         expect(field).to.be.an.instanceof(Field);
-        done();
       });
 
-      lab.test('throws for unsupported default (RegExp)', function(done) {
-        var call = function() {
+      lab.test('throws for unsupported default (RegExp)', () => {
+        const call = () => {
           return new Field({default: /foo/});
         };
         expect(call).to.throw('Unable to serialize type: regexp');
-        done();
       });
 
-      lab.test('throws for unsupported default (null)', function(done) {
-        var call = function() {
+      lab.test('throws for unsupported default (null)', () => {
+        const call = () => {
           return new Field({default: null});
         };
         expect(call).to.throw('Unable to serialize type: null');
-        done();
       });
 
-      lab.test('throws for unsupported default (undefined)', function(done) {
-        var call = function() {
+      lab.test('throws for unsupported default (undefined)', () => {
+        const call = () => {
           return new Field({default: undefined});
         };
         expect(call).to.throw('Unable to serialize type: undefined');
-        done();
       });
 
-      lab.test('throws for an object without default', function(done) {
-        var call = function() {
+      lab.test('throws for an object without default', () => {
+        const call = () => {
           return new Field({foo: 'bar'});
         };
         expect(call).to.throw('Missing default');
-        done();
       });
-
     });
 
-    lab.experiment('#serialize()', function() {
-
-      lab.test('serializes strings with default string', function(done) {
-        var field = new Field({default: 'foo'});
+    lab.experiment('#serialize()', () => {
+      lab.test('serializes strings with default string', () => {
+        const field = new Field({default: 'foo'});
         expect(field.serialize('bar')).to.equal('bar');
         expect(field.serialize('')).to.equal('');
-        done();
       });
 
-      lab.test('serializes numbers with default number', function(done) {
-        var field = new Field({default: 42});
+      lab.test('serializes numbers with default number', () => {
+        const field = new Field({default: 42});
         expect(field.serialize(100)).to.equal('100');
         expect(field.serialize(0)).to.equal('0');
-        done();
       });
 
-      lab.test('serializes dates with default date', function(done) {
-        var field = new Field({default: new Date()});
-        var then = '2014-06-09T23:57:12.588Z';
+      lab.test('serializes dates with default date', () => {
+        const field = new Field({default: new Date()});
+        const then = '2014-06-09T23:57:12.588Z';
         expect(dec(field.serialize(new Date(then)))).to.equal(then);
-        done();
       });
 
-      lab.test('serializes arrays with default array', function(done) {
-        var field = new Field({default: [42, 'foo']});
-        var array = ['foo', 42];
-        var json = dec(field.serialize(array));
+      lab.test('serializes arrays with default array', () => {
+        const field = new Field({default: [42, 'foo']});
+        const array = ['foo', 42];
+        const json = dec(field.serialize(array));
         expect(JSON.parse(json)).to.equal(array);
-        done();
       });
 
-      lab.test('serializes objects with default object', function(done) {
-        var field = new Field({default: {foo: 'bar'}});
-        var obj = {baz: 'bam'};
-        var json = dec(field.serialize(obj));
+      lab.test('serializes objects with default object', () => {
+        const field = new Field({default: {foo: 'bar'}});
+        const obj = {baz: 'bam'};
+        const json = dec(field.serialize(obj));
         expect(JSON.parse(json)).to.equal(obj);
-        done();
       });
 
-      lab.test('serializes with serialize function', function(done) {
-        var serialize = function(value) {
-          return value + 'foo';
-        };
-        var field = new Field({default: 42, serialize: serialize});
+      lab.test('serializes with serialize function', () => {
+        const serialize = value => value + 'foo';
+        const field = new Field({default: 42, serialize: serialize});
         expect(field.serialize('10')).to.equal('10foo');
-        done();
       });
-
     });
 
-    lab.experiment('#deserialize()', function() {
-
-      lab.test('deserializes strings with default string', function(done) {
-        var field = new Field({default: 'foo'});
+    lab.experiment('#deserialize()', () => {
+      lab.test('deserializes strings with default string', () => {
+        const field = new Field({default: 'foo'});
         expect(field.deserialize('bar')).to.equal('bar');
-        done();
       });
 
-      lab.test('serializes numbers with default number', function(done) {
-        var field = new Field({default: 42});
+      lab.test('serializes numbers with default number', () => {
+        const field = new Field({default: 42});
         expect(field.deserialize('100')).to.equal(100);
         expect(field.deserialize('0')).to.equal(0);
-        done();
       });
 
-      lab.test('deserializes date with default date', function(done) {
-        var field = new Field({default: new Date()});
+      lab.test('deserializes date with default date', () => {
+        const field = new Field({default: new Date()});
         expect(field).to.be.an.instanceof(Field);
-        var then = '2014-06-09T23:57:12.588Z';
-        var date = field.deserialize(then);
+        const then = '2014-06-09T23:57:12.588Z';
+        const date = field.deserialize(then);
         expect(date.getTime()).to.equal(new Date(then).getTime());
-        done();
       });
 
-      lab.test('deserializes arrays with default array', function(done) {
-        var field = new Field({default: [42, 'foo']});
+      lab.test('deserializes arrays with default array', () => {
+        const field = new Field({default: [42, 'foo']});
         expect(field).to.be.an.instanceof(Field);
-        var array = ['foo', 42];
-        var json = JSON.stringify(array);
+        const array = ['foo', 42];
+        const json = JSON.stringify(array);
         expect(field.deserialize(json)).to.equal(array);
-        done();
       });
 
-      lab.test('deserializes objects with default object', function(done) {
-        var field = new Field({default: {foo: 'bar'}});
+      lab.test('deserializes objects with default object', () => {
+        const field = new Field({default: {foo: 'bar'}});
         expect(field).to.be.an.instanceof(Field);
-        var obj = {baz: 'bam'};
-        var json = JSON.stringify(obj);
+        const obj = {baz: 'bam'};
+        const json = JSON.stringify(obj);
         expect(field.deserialize(json)).to.equal(obj);
-        done();
       });
 
-      lab.test('deserializes with deserialize function', function(done) {
-        var deserialize = function(value) {
-          return value + 'foo';
-        };
-        var field = new Field({default: 42, deserialize: deserialize});
+      lab.test('deserializes with deserialize function', () => {
+        const deserialize = value => value + 'foo';
+        const field = new Field({default: 42, deserialize: deserialize});
         expect(field.deserialize(10)).to.equal('10foo');
-        done();
       });
-
     });
-
   });
-
 });

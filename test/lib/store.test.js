@@ -1,490 +1,549 @@
-var lab = exports.lab = require('lab').script();
-var expect = require('code').expect;
+const lab = (exports.lab = require('lab').script());
+const expect = require('code').expect;
 
-var Store = require('../../lib/store').Store;
+const Store = require('../../lib/store').Store;
 
-lab.experiment('store', function() {
+lab.experiment('store', () => {
+  lab.experiment('Store', () => {
+    const noop = () => {};
 
-  lab.experiment('Store', function() {
-    var noop = function() {};
-
-    lab.experiment('constructor', function() {
-
-      lab.test('creates a new instance', function(done) {
-        var store = new Store({}, noop);
+    lab.experiment('constructor', () => {
+      lab.test('creates a new instance', () => {
+        const store = new Store({}, noop);
         expect(store).to.be.an.instanceof(Store);
-        done();
       });
 
-      lab.test('accepts initial values', function(done) {
-        var calls = [];
-        var store = new Store({foo: 'bar', num: '42'}, function(values, defaults) {
-          calls.push({values: values, defaults: defaults});
-        });
-        var update = store.register({num: 43}, noop);
-        update({num: 44});
-        expect(calls).to.have.length(0);
-        setTimeout(function() {
-          expect(calls).to.have.length(1);
-          expect(calls[0]).to.equal({
-            values: {foo: 'bar', num: '44'},
-            defaults: {num: '43'}
-          });
-          done();
-        }, 5);
-      });
+      lab.test(
+        'accepts initial values',
+        () =>
+          new Promise(resolve => {
+            const calls = [];
+            const store = new Store(
+              {foo: 'bar', num: '42'},
+              (values, defaults) => {
+                calls.push({values: values, defaults: defaults});
+              }
+            );
+            const update = store.register({num: 43}, noop);
+            update({num: 44});
+            expect(calls).to.have.length(0);
 
+            setTimeout(() => {
+              expect(calls).to.have.length(1);
+              expect(calls[0]).to.equal({
+                values: {foo: 'bar', num: '44'},
+                defaults: {num: '43'}
+              });
+              resolve();
+            }, 5);
+          })
+      );
     });
 
-    lab.experiment('#update()', function() {
+    lab.experiment('#update()', () => {
+      lab.test(
+        'updates store values and calls provider callbacks',
+        () =>
+          new Promise(resolve => {
+            const store = new Store({}, noop);
+            const log = [];
+            store.register({foo: 'bar'}, values => {
+              log.push(values);
+            });
+            expect(log).to.equal([{foo: 'bar'}]);
+            log.length = 0;
 
-      lab.test('updates store values and calls provider callbacks', function(done) {
-        var store = new Store({}, noop);
-        var log = [];
-        store.register({foo: 'bar'}, function(values) {
-          log.push(values);
-        });
-        expect(log).to.equal([{foo: 'bar'}]);
-        log.length = 0;
+            store.update({foo: 'bam'});
+            setTimeout(() => {
+              expect(log).to.equal([{foo: 'bam'}]);
+              resolve();
+            }, 5);
+          })
+      );
 
-        store.update({foo: 'bam'});
-        setTimeout(function() {
-          expect(log).to.equal([{foo: 'bam'}]);
-          done();
-        }, 5);
-      });
+      lab.test(
+        'calls callback once for multiple synchronous updates',
+        () =>
+          new Promise(resolve => {
+            const store = new Store({}, noop);
+            const log = [];
+            store.register({foo: 'bar', num: 42}, values => {
+              log.push(values);
+            });
+            expect(log).to.equal([{foo: 'bar', num: 42}]);
+            log.length = 0;
 
-      lab.test('calls callback once for multiple synchronous updates', function(done) {
-        var store = new Store({}, noop);
-        var log = [];
-        store.register({foo: 'bar', num: 42}, function(values) {
-          log.push(values);
-        });
-        expect(log).to.equal([{foo: 'bar', num: 42}]);
-        log.length = 0;
+            store.update({foo: 'bam', num: '21'});
+            store.update({foo: 'baz', num: '63'});
 
-        store.update({foo: 'bam', num: '21'});
-        store.update({foo: 'baz', num: '63'});
+            setTimeout(() => {
+              expect(log).to.equal([{foo: 'baz', num: 63}]);
+              resolve();
+            }, 5);
+          })
+      );
 
-        setTimeout(function() {
-          expect(log).to.equal([{foo: 'baz', num: 63}]);
-          done();
-        }, 5);
-      });
+      lab.test(
+        'only calls callback with updated values',
+        () =>
+          new Promise(resolve => {
+            const store = new Store({}, noop);
+            const log = [];
+            store.register({foo: 'bar', num: 42}, values => {
+              log.push(values);
+            });
+            expect(log).to.equal([{foo: 'bar', num: 42}]);
+            log.length = 0;
 
-      lab.test('only calls callback with updated values', function(done) {
-        var store = new Store({}, noop);
-        var log = [];
-        store.register({foo: 'bar', num: 42}, function(values) {
-          log.push(values);
-        });
-        expect(log).to.equal([{foo: 'bar', num: 42}]);
-        log.length = 0;
+            store.update({num: '63', foo: 'bar'});
 
-        store.update({num: '63', foo: 'bar'});
+            setTimeout(() => {
+              expect(log).to.equal([{num: 63}]);
+              resolve();
+            }, 5);
+          })
+      );
 
-        setTimeout(function() {
-          expect(log).to.equal([{num: 63}]);
-          done();
-        }, 5);
-      });
+      lab.test(
+        'calls callback with defaults when updated values are absent',
+        () =>
+          new Promise(resolve => {
+            const store = new Store({foo: 'non-default', bar: 42}, noop);
+            const log = [];
+            store.register({foo: 'bar', num: 42}, values => {
+              log.push(values);
+            });
+            expect(log).to.equal([{foo: 'non-default', num: 42}]);
+            log.length = 0;
 
-      lab.test('calls callback with defaults when updated values are absent', function(done) {
-        var store = new Store({foo: 'non-default', bar: 42}, noop);
-        var log = [];
-        store.register({foo: 'bar', num: 42}, function(values) {
-          log.push(values);
-        });
-        expect(log).to.equal([{foo: 'non-default', num: 42}]);
-        log.length = 0;
+            store.update({num: '63'});
 
-        store.update({num: '63'});
+            setTimeout(() => {
+              expect(log).to.equal([{foo: 'bar', num: 63}]);
+              resolve();
+            }, 5);
+          })
+      );
 
-        setTimeout(function() {
-          expect(log).to.equal([{foo: 'bar', num: 63}]);
-          done();
-        }, 5);
-      });
+      lab.test(
+        'last update wins',
+        () =>
+          new Promise(resolve => {
+            const store = new Store({}, noop);
+            const log = [];
+            store.register({foo: 'bar', num: 42}, values => {
+              log.push(values);
+            });
+            expect(log).to.equal([{foo: 'bar', num: 42}]);
+            log.length = 0;
 
-      lab.test('last update wins', function(done) {
-        var store = new Store({}, noop);
-        var log = [];
-        store.register({foo: 'bar', num: 42}, function(values) {
-          log.push(values);
-        });
-        expect(log).to.equal([{foo: 'bar', num: 42}]);
-        log.length = 0;
+            store.update({num: '63'});
+            store.update({foo: 'bam'});
 
-        store.update({num: '63'});
-        store.update({foo: 'bam'});
+            setTimeout(() => {
+              expect(log).to.equal([{foo: 'bam'}]);
+              resolve();
+            }, 5);
+          })
+      );
 
-        setTimeout(function() {
-          expect(log).to.equal([{foo: 'bam'}]);
-          done();
-        }, 5);
-      });
+      lab.test(
+        'does not call callback if values do not change',
+        () =>
+          new Promise(resolve => {
+            const store = new Store({}, noop);
+            const log = [];
+            store.register({foo: 'bar', num: 42}, values => {
+              log.push(values);
+            });
+            expect(log).to.equal([{foo: 'bar', num: 42}]);
+            log.length = 0;
 
-      lab.test('does not call callback if values do not change', function(done) {
-        var store = new Store({}, noop);
-        var log = [];
-        store.register({foo: 'bar', num: 42}, function(values) {
-          log.push(values);
-        });
-        expect(log).to.equal([{foo: 'bar', num: 42}]);
-        log.length = 0;
+            store.update({num: '42'});
+            store.update({foo: 'bar'});
 
-        store.update({num: '42'});
-        store.update({foo: 'bar'});
+            setTimeout(() => {
+              expect(log).to.have.length(0);
+              resolve();
+            }, 5);
+          })
+      );
 
-        setTimeout(function() {
-          expect(log).to.have.length(0);
-          done();
-        }, 5);
-      });
+      lab.test(
+        'does not call callback for garbage updates',
+        () =>
+          new Promise(resolve => {
+            const store = new Store({}, noop);
+            const log = [];
+            store.register({foo: 'bar', num: 42}, values => {
+              log.push(values);
+            });
+            expect(log).to.equal([{foo: 'bar', num: 42}]);
+            log.length = 0;
 
-      lab.test('does not call callback for garbage updates', function(done) {
-        var store = new Store({}, noop);
-        var log = [];
-        store.register({foo: 'bar', num: 42}, function(values) {
-          log.push(values);
-        });
-        expect(log).to.equal([{foo: 'bar', num: 42}]);
-        log.length = 0;
+            store.update({num: 'garbage'});
 
-        store.update({num: 'garbage'});
+            setTimeout(() => {
+              expect(log).to.have.length(0);
+              resolve();
+            }, 5);
+          })
+      );
 
-        setTimeout(function() {
-          expect(log).to.have.length(0);
-          done();
-        }, 5);
-      });
+      lab.test(
+        'calls callback with valid values if some of the values are garbage',
+        () =>
+          new Promise(resolve => {
+            const store = new Store({}, noop);
+            const log = [];
+            store.register({foo: 'bar', num: 42}, values => {
+              log.push(values);
+            });
+            expect(log).to.equal([{foo: 'bar', num: 42}]);
+            log.length = 0;
 
-      lab.test('calls callback with valid values if some of the values are garbage', function(done) {
-        var store = new Store({}, noop);
-        var log = [];
-        store.register({foo: 'bar', num: 42}, function(values) {
-          log.push(values);
-        });
-        expect(log).to.equal([{foo: 'bar', num: 42}]);
-        log.length = 0;
+            store.update({num: 'garbage', foo: 'bam'});
 
-        store.update({num: 'garbage', foo: 'bam'});
+            setTimeout(() => {
+              expect(log).to.equal([{foo: 'bam'}]);
+              resolve();
+            }, 5);
+          })
+      );
 
-        setTimeout(function() {
-          expect(log).to.equal([{foo: 'bam'}]);
-          done();
-        }, 5);
-      });
+      lab.test(
+        'calls most recently registered provider first',
+        () =>
+          new Promise(resolve => {
+            const store = new Store({}, noop);
+            const log = [];
+            store.register({foo: 'bar'}, values => {
+              log.push('first');
+            });
+            store.register({num: 42}, values => {
+              log.push('second');
+            });
+            log.length = 0;
 
-      lab.test('calls most recently registered provider first', function(done) {
-        var store = new Store({}, noop);
-        var log = [];
-        store.register({foo: 'bar'}, function(values) {
-          log.push('first');
-        });
-        store.register({num: 42}, function(values) {
-          log.push('second');
-        });
-        log.length = 0;
+            store.update({num: '43', foo: 'bam'});
 
-        store.update({num: '43', foo: 'bam'});
+            setTimeout(() => {
+              expect(log).to.equal(['second', 'first']);
+              resolve();
+            }, 5);
+          })
+      );
 
-        setTimeout(function() {
-          expect(log).to.equal(['second', 'first']);
-          done();
-        }, 5);
-      });
+      lab.test(
+        'works if callbacks unregister providers',
+        () =>
+          new Promise(resolve => {
+            const store = new Store({}, noop);
+            const log = [];
 
-      lab.test('works if callbacks unregister providers', function(done) {
-        var store = new Store({}, noop);
-        var log = [];
+            let unregister = false;
+            function first() {
+              log.push('first');
+            }
+            function second() {
+              log.push('second');
+              if (unregister) {
+                store.unregister(first);
+              }
+            }
+            store.register({foo: 'bar'}, first);
+            store.register({num: 42}, second);
+            log.length = 0;
 
-        var unregister = false;
-        function first() {
-          log.push('first');
-        }
-        function second() {
-          log.push('second');
-          if (unregister) {
-            store.unregister(first);
-          }
-        }
-        store.register({foo: 'bar'}, first);
-        store.register({num: 42}, second);
-        log.length = 0;
+            unregister = true;
+            store.update({num: '43', foo: 'bam'});
 
-        unregister = true;
-        store.update({num: '43', foo: 'bam'});
-
-        setTimeout(function() {
-          expect(log).to.equal(['second']);
-          done();
-        }, 5);
-      });
-
+            setTimeout(() => {
+              expect(log).to.equal(['second']);
+              resolve();
+            }, 5);
+          })
+      );
     });
 
-    lab.experiment('#register()', function() {
-
-      lab.test('registers a new provider', function(done) {
-        var store = new Store({}, noop);
+    lab.experiment('#register()', () => {
+      lab.test('registers a new provider', () => {
+        const store = new Store({}, noop);
         store.register({foo: 'bar'}, noop);
-        done();
       });
 
-      lab.test('initializes provider synchronously with defaults', function(done) {
-        var store = new Store({}, noop);
-        var called = false;
-        store.register({foo: 'bar'}, function(values) {
+      lab.test('initializes provider synchronously with defaults', () => {
+        const store = new Store({}, noop);
+        let called = false;
+        store.register({foo: 'bar'}, values => {
           called = true;
           expect(values).to.equal({foo: 'bar'});
         });
         expect(called).to.equal(true);
-        done();
       });
 
-      lab.test('initializes provider synchronously with initial values', function(done) {
-        var store = new Store({foo: 'bam'}, noop);
-        var called = false;
-        store.register({foo: 'bar'}, function(values) {
+      lab.test('initializes provider synchronously with initial values', () => {
+        const store = new Store({foo: 'bam'}, noop);
+        let called = false;
+        store.register({foo: 'bar'}, values => {
           called = true;
           expect(values).to.equal({foo: 'bam'});
         });
         expect(called).to.equal(true);
-        done();
       });
 
-      lab.test('initializes provider with defaults if store values are invalid', function(done) {
-        var store = new Store({num: 'not a number'}, noop);
-        var called = false;
-        store.register({num: 42}, function(values) {
-          called = true;
-          expect(values).to.equal({num: 42});
-        });
-        expect(called).to.equal(true);
-        done();
-      });
+      lab.test(
+        'initializes provider with defaults if store values are invalid',
+        () => {
+          const store = new Store({num: 'not a number'}, noop);
+          let called = false;
+          store.register({num: 42}, values => {
+            called = true;
+            expect(values).to.equal({num: 42});
+          });
+          expect(called).to.equal(true);
+        }
+      );
 
-      lab.test('returns a function used to update state', function(done) {
-        var store = new Store({}, noop);
-        var update = store.register({foo: 'bar'}, noop);
+      lab.test('returns a function used to update state', () => {
+        const store = new Store({}, noop);
+        const update = store.register({foo: 'bar'}, noop);
 
         expect(update).to.be.a.function();
-        done();
       });
 
-      lab.test('calls callback asynchronously on update', function(done) {
-        var calls = [];
-        var store = new Store({}, function(values, defaults) {
-          calls.push({values: values, defaults: defaults});
-        });
+      lab.test(
+        'calls callback asynchronously on update',
+        () =>
+          new Promise(resolve => {
+            const calls = [];
+            const store = new Store({}, (values, defaults) => {
+              calls.push({values: values, defaults: defaults});
+            });
 
-        var update = store.register({foo: 'bar'}, noop);
+            const update = store.register({foo: 'bar'}, noop);
 
-        update({foo: 'bam'});
-        expect(calls).to.have.length(0);
+            update({foo: 'bam'});
+            expect(calls).to.have.length(0);
 
-        setTimeout(function() {
-          expect(calls).to.have.length(1);
-          expect(calls[0]).to.equal({
-            values: {foo: 'bam'},
-            defaults: {foo: 'bar'}
-          });
+            setTimeout(() => {
+              expect(calls).to.have.length(1);
+              expect(calls[0]).to.equal({
+                values: {foo: 'bam'},
+                defaults: {foo: 'bar'}
+              });
 
-          done();
-        }, 5);
-      });
+              resolve();
+            }, 5);
+          })
+      );
 
-      lab.test('calls callback with all values when one is updated', function(done) {
-        var calls = [];
-        var store = new Store({foo: 'bar', num: '41'}, function(values, defaults) {
-          calls.push({values: values, defaults: defaults});
-        });
+      lab.test(
+        'calls callback with all values when one is updated',
+        () =>
+          new Promise(resolve => {
+            const calls = [];
+            const store = new Store(
+              {foo: 'bar', num: '41'},
+              (values, defaults) => {
+                calls.push({values: values, defaults: defaults});
+              }
+            );
 
-        var update = store.register({foo: 'bam', num: 42}, noop);
+            const update = store.register({foo: 'bam', num: 42}, noop);
 
-        update({num: 43});
-        expect(calls).to.have.length(0);
+            update({num: 43});
+            expect(calls).to.have.length(0);
 
-        setTimeout(function() {
-          expect(calls).to.have.length(1);
-          expect(calls[0]).to.equal({
-            values: {foo: 'bar', num: '43'},
-            defaults: {foo: 'bam', num: '42'}
-          });
+            setTimeout(() => {
+              expect(calls).to.have.length(1);
+              expect(calls[0]).to.equal({
+                values: {foo: 'bar', num: '43'},
+                defaults: {foo: 'bam', num: '42'}
+              });
 
-          done();
-        }, 5);
-      });
+              resolve();
+            }, 5);
+          })
+      );
 
-      lab.test('does not call callback if values do not change', function(done) {
-        var calls = [];
-        var store = new Store({foo: 'bar'}, function(values) {
-          calls.push(values);
-        });
+      lab.test(
+        'does not call callback if values do not change',
+        () =>
+          new Promise(resolve => {
+            const calls = [];
+            const store = new Store({foo: 'bar'}, values => {
+              calls.push(values);
+            });
 
-        var update = store.register({foo: 'bam'}, noop);
+            const update = store.register({foo: 'bam'}, noop);
 
-        update({foo: 'bar'});
-        expect(calls).to.have.length(0);
+            update({foo: 'bar'});
+            expect(calls).to.have.length(0);
 
-        setTimeout(function() {
-          expect(calls).to.have.length(0);
-          done();
-        }, 5);
-      });
+            setTimeout(() => {
+              expect(calls).to.have.length(0);
+              resolve();
+            }, 5);
+          })
+      );
 
-      lab.test('debounces callback calls', function(done) {
-        var calls = [];
-        var store = new Store({}, function(values) {
-          calls.push(values);
-        });
+      lab.test(
+        'debounces callback calls',
+        () =>
+          new Promise(resolve => {
+            const calls = [];
+            const store = new Store({}, values => {
+              calls.push(values);
+            });
 
-        var update = store.register({foo: 'bar'}, noop);
+            const update = store.register({foo: 'bar'}, noop);
 
-        update({foo: 'bam'});
-        expect(calls).to.have.length(0);
+            update({foo: 'bam'});
+            expect(calls).to.have.length(0);
 
-        update({foo: 'baz'});
-        expect(calls).to.have.length(0);
+            update({foo: 'baz'});
+            expect(calls).to.have.length(0);
 
-        setTimeout(function() {
-          expect(calls).to.have.length(1);
-          expect(calls[0]).to.equal({foo: 'baz'});
-          done();
-        }, 5);
-      });
+            setTimeout(() => {
+              expect(calls).to.have.length(1);
+              expect(calls[0]).to.equal({foo: 'baz'});
+              resolve();
+            }, 5);
+          })
+      );
 
-      lab.test('throws when registering with a conflicting key', function(done) {
-        var store = new Store({}, noop);
+      lab.test('throws when registering with a conflicting key', () => {
+        const store = new Store({}, noop);
         store.register({foo: 'bar'}, noop);
 
-        var call = function() {
+        const call = () => {
           store.register({foo: 'bam'}, noop);
         };
         expect(call).to.throw(
-            'Provider already registered using the same name: foo');
-        done();
+          'Provider already registered using the same name: foo'
+        );
       });
 
-      lab.test('throws when registering a duplicate callback', function(done) {
-        var store = new Store({}, noop);
+      lab.test('throws when registering a duplicate callback', () => {
+        const store = new Store({}, noop);
 
-        var callback = function() {};
+        const callback = () => {};
         store.register({foo: 'bar'}, callback);
 
-        var call = function() {
+        const call = () => {
           store.register({num: 42}, callback);
         };
         expect(call).to.throw(
-            'Provider already registered with the same callback');
-        done();
+          'Provider already registered with the same callback'
+        );
       });
-
     });
 
-    lab.experiment('#unregister()', function() {
+    lab.experiment('#unregister()', () => {
+      lab.test('allows a provider to be removed', () => {
+        const store = new Store({}, noop);
 
-      lab.test('allows a provider to be removed', function(done) {
-        var store = new Store({}, noop);
-
-        var callback = function() {};
+        const callback = () => {};
         store.register({foo: 'bar'}, callback);
         store.unregister(callback);
-        done();
       });
 
-      lab.test('removes values associated with the provider', function(done) {
-        var calls = [];
-        var store = new Store({}, function(values) {
-          calls.push(values);
-        });
+      lab.test(
+        'removes values associated with the provider',
+        () =>
+          new Promise(resolve => {
+            const calls = [];
+            const store = new Store({}, values => {
+              calls.push(values);
+            });
 
-        var firstCallback = function() {};
-        var firstUpdate = store.register({foo: 'bar'}, firstCallback);
+            const firstCallback = () => {};
+            const firstUpdate = store.register({foo: 'bar'}, firstCallback);
 
-        var secondCallback = function() {};
-        var secondUpdate = store.register({num: 42}, secondCallback);
+            const secondCallback = () => {};
+            const secondUpdate = store.register({num: 42}, secondCallback);
 
-        expect(calls).to.have.length(0);
+            expect(calls).to.have.length(0);
 
-        firstUpdate({foo: 'bam'});
-        secondUpdate({num: 43});
+            firstUpdate({foo: 'bam'});
+            secondUpdate({num: 43});
 
-        store.unregister(firstCallback);
+            store.unregister(firstCallback);
 
-        setTimeout(function() {
-          expect(calls).to.have.length(1);
-          expect(calls[0]).to.equal({num: '43'});
-          done();
-        }, 5);
-      });
+            setTimeout(() => {
+              expect(calls).to.have.length(1);
+              expect(calls[0]).to.equal({num: '43'});
+              resolve();
+            }, 5);
+          })
+      );
 
-      lab.test('causes unregistered provider update to throw', function(done) {
-        var store = new Store({}, noop);
+      lab.test('causes unregistered provider update to throw', () => {
+        const store = new Store({}, noop);
 
-        var callback = function() {};
-        var update = store.register({foo: 'bar'}, callback);
+        const callback = () => {};
+        const update = store.register({foo: 'bar'}, callback);
 
         store.unregister(callback);
 
-        var call = function() {
+        const call = () => {
           update({foo: 'bam'});
         };
-        expect(call).to.throw('Unregistered provider attempting to update state');
-        done();
+        expect(call).to.throw(
+          'Unregistered provider attempting to update state'
+        );
       });
 
-      lab.test('throws if called twice for the same provider', function(done) {
-        var store = new Store({}, noop);
+      lab.test('throws if called twice for the same provider', () => {
+        const store = new Store({}, noop);
 
-        var callback = function() {};
+        const callback = () => {};
         store.register({foo: 'bar'}, callback);
 
         store.unregister(callback);
 
-        var call = function() {
+        const call = () => {
           store.unregister(callback);
         };
         expect(call).to.throw('Unable to unregister hashed state provider');
-        done();
       });
-
     });
-
   });
 
-  lab.experiment('#serialize()', function() {
+  lab.experiment('#serialize()', () => {
+    lab.test('it uses default serializers', () => {
+      const store = new Store({}, () => {});
 
-    lab.test('it uses default serializers', function(done) {
-      var store = new Store({}, function() {});
-
-      var serialized = store.serialize({foo: 'bar', num: 42});
+      const serialized = store.serialize({foo: 'bar', num: 42});
       expect(serialized).to.equal({foo: 'bar', num: '42'});
-      done();
     });
 
-    lab.test('it uses serializer from registered provider if available', function(done) {
-      var store = new Store({}, function() {});
+    lab.test('it uses serializer from registered provider if available', () => {
+      const store = new Store({}, () => {});
 
-      store.register({
-        foo: {
-          default: 'bar',
-          serialize: function(value) {
-            return value.split('').reverse().join('');
+      store.register(
+        {
+          foo: {
+            default: 'bar',
+            serialize: value =>
+              value
+                .split('')
+                .reverse()
+                .join(''),
+            deserialize: str =>
+              str
+                .split('')
+                .reverse()
+                .join('')
           },
-          deserialize: function(str) {
-            return str.split('').reverse().join('');
-          }
+          bam: 'baz'
         },
-        bam: 'baz'
-      }, function() {});
+        () => {}
+      );
 
-      var serialized = store.serialize({foo: 'bar', num: 42});
+      const serialized = store.serialize({foo: 'bar', num: 42});
       expect(serialized).to.equal({foo: 'rab', num: '42'});
-      done();
     });
-
   });
-
 });

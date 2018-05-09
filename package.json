@@ -21,23 +21,21 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "watchy --watch package.json,lib,test -- npm run build",
-    "pretest": "eslint lib test",
+    "lint": "eslint lib test",
+    "pretest": "npm run lint",
     "test": "lab -t 100 test",
     "build": "npm test && make",
     "test-debug": "node-debug lab --ignore window,document,regeneratorRuntime,jQuery,_babelPolyfill,core,Reflect",
-    "prepublish": "in-publish && make || not-in-publish"
+    "prepublishOnly": "make"
   },
   "main": "lib/index.js",
   "devDependencies": {
-    "browserify": "~14.1.0",
-    "code": "^4.0.0",
-    "eslint": "3.19.0",
-    "eslint-config-tschaub": "6.0.0",
-    "in-publish": "^2.0.0",
-    "lab": "^14.0.1",
-    "uglify-js": "^3.0.19",
-    "watchy": "^0.6.6"
+    "browserify": "^16.2.2",
+    "code": "^5.2.0",
+    "eslint": "^4.19.1",
+    "eslint-config-tschaub": "^11.0.0",
+    "lab": "^15.4.4",
+    "uglify-js": "^3.3.24"
   },
   "eslintConfig": {
     "extends": "tschaub"

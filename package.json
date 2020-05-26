@@ -24,18 +24,17 @@
     "lint": "eslint lib test",
     "pretest": "npm run lint",
     "test": "lab -t 100 test",
-    "build": "npm test && make",
-    "test-debug": "node-debug lab --ignore window,document,regeneratorRuntime,jQuery,_babelPolyfill,core,Reflect",
-    "prepublishOnly": "make"
+    "start": "parcel examples/index.html",
+    "build-example": "parcel build examples/index.html",
+    "test-debug": "node-debug lab --ignore window,document,regeneratorRuntime,jQuery,_babelPolyfill,core,Reflect"
   },
-  "main": "lib/index.js",
+  "main": "lib/main.js",
   "devDependencies": {
-    "browserify": "^16.2.2",
-    "code": "^5.2.0",
-    "eslint": "^4.19.1",
-    "eslint-config-tschaub": "^11.0.0",
-    "lab": "^15.4.4",
-    "uglify-es": "^3.3.9"
+    "@hapi/code": "^8.0.1",
+    "@hapi/lab": "^22.0.4",
+    "eslint": "^7.1.0",
+    "eslint-config-tschaub": "^13.1.0",
+    "parcel-bundler": "^1.12.4"
   },
   "eslintConfig": {
     "extends": "tschaub"

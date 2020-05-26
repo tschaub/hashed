@@ -1,5 +1,5 @@
-const lab = (exports.lab = require('lab').script());
-const expect = require('code').expect;
+const lab = (exports.lab = require('@hapi/lab').script());
+const expect = require('@hapi/code').expect;
 
 const deserializers = require('../../lib/deserializers');
 
@@ -91,6 +91,14 @@ lab.experiment('deserializers', () => {
       expect(call).to.throw('Expected string to deserialize: ');
     });
 
+    lab.test('boolean deserializer throws for empty string', () => {
+      const deserialize = get('boolean');
+      const call = () => {
+        deserialize(42);
+      };
+      expect(call).to.throw('Expected string to deserialize: 42');
+    });
+
     lab.test('returns an appropriate deserializer for date', () => {
       const deserialize = get('date');
       const then = '2014-06-09T23:57:12.588Z';
@@ -136,6 +144,22 @@ lab.experiment('deserializers', () => {
       expect(call).to.throw('Expected string to deserialize: 10');
     });
 
+    lab.test('array deserializer throws for null', () => {
+      const deserialize = get('array');
+      const call = () => {
+        deserialize('null');
+      };
+      expect(call).to.throw('Expected to deserialize an array: null');
+    });
+
+    lab.test('array deserializer throws for object', () => {
+      const deserialize = get('array');
+      const call = () => {
+        deserialize('{}');
+      };
+      expect(call).to.throw('Expected to deserialize an array: {}');
+    });
+
     lab.test('array deserializer throws for empty string', () => {
       const deserialize = get('array');
       const call = () => {
@@ -165,6 +189,22 @@ lab.experiment('deserializers', () => {
         deserialize(10);
       };
       expect(call).to.throw('Expected string to deserialize: 10');
+    });
+
+    lab.test('object deserializer throws for null', () => {
+      const deserialize = get('object');
+      const call = () => {
+        deserialize('null');
+      };
+      expect(call).to.throw('Expected to deserialize an object: null');
+    });
+
+    lab.test('object deserializer throws for array', () => {
+      const deserialize = get('object');
+      const call = () => {
+        deserialize('[]');
+      };
+      expect(call).to.throw('Expected to deserialize an object: []');
     });
 
     lab.test('object deserializer throws for empty string', () => {

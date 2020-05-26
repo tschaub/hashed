@@ -6,7 +6,7 @@ Hashed lets you register any number of providers and serializes their state in t
 
 ## Setup
 
-If you use a module bundler like [Browserify](http://browserify.org/), you can install `hashed` with `npm`.
+Install `hashed` with [`npm`](https://nodejs.org/).
 
 In your project root:
 
@@ -15,10 +15,8 @@ In your project root:
 In one of your application modules:
 
 ```js
-var hashed = require('hashed');
+const hashed = require('hashed');
 ```
-
-If you're using a non-CommonJS module loader or just plain `<script>` tags, the package comes with minified and unminified versions of the library as [UMD](https://github.com/umdjs/umd/blob/master/README.md) bundles in the `dist` directory.
 
 ## Examples
 
@@ -27,7 +25,7 @@ If you're using a non-CommonJS module loader or just plain `<script>` tags, the 
 The simplest use of hashed is to register a single state provider.  This example uses the built-in functions for transforming state values to strings for the URL (serializing) and transforming strings from the URL into state values (deserializing).
 
 ```js
-var state = {
+const state = {
   count: 42,
   color: 'blue'
 };
@@ -37,7 +35,7 @@ function listener(newState) {
 }
 
 // register a state provider
-var update = hashed.register(state, listener);
+const update = hashed.register(state, listener);
 
 // When the state of your application changes, update the hash.
 update({count: 43}); // URL hash will become #/count/43/color/blue
@@ -50,7 +48,7 @@ The default serializers and deserializers work for primitive state values (strin
 ```js
 // Assume your state has a "colors" array and
 // you don't want JSON serialization in the URL.
-var config = {
+const config = {
   colors: {
     default: [] // no colors by default
     serialize: function(colors) {
@@ -68,7 +66,7 @@ var config = {
 };
 
 // register a state provider
-var update = hashed.register(config, function(state) {
+const update = hashed.register(config, function(state) {
   // this will get called with a "colors" array
 });
 
@@ -88,7 +86,7 @@ The `register` function takes two arguments:
   Without custom serializers or deserializers, the config is an objects with property values representing the default state.  For example, if your state is represented by a "start" date of Jan 1, 2000 and a "count" value of 42, your `config` would look like this:
 
   ```js
-  var config = {
+  const config = {
     start: new Date(Date.UTC(2000, 0, 1)),
     count: 42
   };
@@ -106,5 +104,4 @@ The `register` function returns a function:
 
 The `unregister` function is to stop synchronizing state with the URL hash.  It should be called with the same `listener` function passed to the `register` function.
 
-
-[![Build Status](https://travis-ci.org/tschaub/hashed.svg?branch=master)](https://travis-ci.org/tschaub/hashed)
+![Test Status](https://github.com/tschaub/hashed/workflows/Test/badge.svg)

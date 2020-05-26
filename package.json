@@ -29,6 +29,9 @@
     "test-debug": "node-debug lab --ignore window,document,regeneratorRuntime,jQuery,_babelPolyfill,core,Reflect"
   },
   "main": "lib/main.js",
+  "files": [
+    "lib/*.js"
+  ],
   "devDependencies": {
     "@hapi/code": "^8.0.1",
     "@hapi/lab": "^22.0.4",

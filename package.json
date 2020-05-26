@@ -30,11 +30,11 @@
   },
   "main": "lib/index.js",
   "devDependencies": {
+    "@hapi/code": "^8.0.1",
+    "@hapi/lab": "^22.0.4",
     "browserify": "^16.2.2",
-    "code": "^5.2.0",
-    "eslint": "^4.19.1",
-    "eslint-config-tschaub": "^11.0.0",
-    "lab": "^15.4.4",
+    "eslint": "^7.1.0",
+    "eslint-config-tschaub": "^13.1.0",
     "uglify-es": "^3.3.9"
   },
   "eslintConfig": {

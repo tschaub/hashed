@@ -23,9 +23,9 @@
   "scripts": {
     "lint": "eslint lib test",
     "pretest": "npm run lint",
-    "test": "lab -t 100 test",
-    "start": "parcel examples/index.html",
-    "build-example": "parcel build examples/index.html",
+    "test": "lab -t 100 --leaks test",
+    "start": "esbuild examples/main.js --bundle --servedir=examples --sourcemap --outfile=examples/bundle.js",
+    "build-example": "esbuild examples/main.js --bundle --minify --sourcemap --outfile=examples/bundle.js",
     "test-debug": "node-debug lab --ignore window,document,regeneratorRuntime,jQuery,_babelPolyfill,core,Reflect"
   },
   "main": "lib/main.js",
@@ -33,13 +33,16 @@
     "lib/*.js"
   ],
   "devDependencies": {
-    "@hapi/code": "^8.0.1",
-    "@hapi/lab": "^22.0.4",
+    "@hapi/code": "^8.0.3",
+    "@hapi/lab": "^22.0.5",
+    "esbuild": "^0.12.15",
     "eslint": "^7.1.0",
-    "eslint-config-tschaub": "^13.1.0",
-    "parcel-bundler": "^1.12.4"
+    "eslint-config-tschaub": "^13.1.0"
   },
   "eslintConfig": {
     "extends": "tschaub"
+  },
+  "dependencies": {
+    "isa.js": "^2.2.16"
   }
 }
